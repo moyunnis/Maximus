@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <img src="./banner1.png" alt="Maximus Banner" width="100%" style="border-radius:5% !important;" />
+  <img src="./banner.png" alt="Maximus Banner" width="100%" style="border-radius:5% !important;" />
 </p>
 
 ---
