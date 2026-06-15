@@ -69,7 +69,7 @@ async def sendmodule_command(api, message, args):
     try:
         # Используем chat_id из сообщения
         chat_id = getattr(message, 'chat_id', None)
-        if not chat_id:
+        if chat_id is None:
             await api.edit(message, "❌ Не удалось определить chat_id")
             return
         
@@ -166,7 +166,7 @@ async def register(commands):
             
             # Список системных путей для обновления (не трогаем modules/, pymax_session/, Maximus_config.json)
             preserve = {"modules", "pymax_session", "Maximus_config.json", ".git", ".gitignore"}
-            copy_roots = ["core", "core_modules", "pymax", "main.py", "install_linux.sh", "install_windows.bat", "README.md"]
+            copy_roots = ["core", "core_modules", "main.py", "README.md", "run.bat", "run.sh", "maximus.service"]
             
             import shutil
             for item in copy_roots:
@@ -207,10 +207,15 @@ async def register(commands):
             ts = int(time.time())
             file_path = Path(f"log_{count}_{ts}.txt")
             file_path.write_text(content, encoding='utf-8')
-            chat_id = getattr(message, 'chat_id', None) or await api.await_chat_id(message)
+            chat_id = getattr(message, 'chat_id', None)
+            if chat_id is None:
+                chat_id = await api.await_chat_id(message)
             if chat_id:
-                await api.send_file(chat_id, str(file_path), f"Логи ({count} строк)", notify=False)
-                await api.delete(message, for_me=False)
+                result = await api.send_file(chat_id, str(file_path), f"Логи ({count} строк)", notify=False)
+                if result:
+                    await api.delete(message, for_me=False)
+                else:
+                    await api.edit(message, "❌ Не удалось отправить файл логов")
             else:
                 await api.edit(message, f"✅ Лог сохранён: {file_path}")
         except Exception as e:
@@ -255,7 +260,7 @@ async def register(commands):
                             modules.append(str(p.name))
                     # 3) (опционально) другие файлы - пока не добавляем глобальные session
                     meta = {
-                        'author': getattr(api.me, 'names', None) and api.me.names[0].name or str(getattr(message, 'sender', 'unknown')),
+                        'author': getattr(api.me.contact, 'names', None) and api.me.contact.names[0].name or str(getattr(message, 'sender', 'unknown')),
                         'date': datetime.datetime.utcnow().isoformat() + 'Z',
                         'module_count': len(modules),
                         'modules': modules,
@@ -268,11 +273,24 @@ async def register(commands):
                     pass
             await asyncio.to_thread(make_backup)
 
-            # Отправляем архив
-            chat_id = getattr(message, 'chat_id', None) or await api.await_chat_id(message)
+            chat_id = getattr(message, 'chat_id', None)
+            if chat_id is None:
+                chat_id = await api.await_chat_id(message)
+            print(f"🔍 DEBUG backup: chat_id={chat_id}, tmp_path={tmp_path}, exists={tmp_path.exists()}")
+
             if chat_id:
-                await api.send_file(chat_id, str(tmp_path), f"Backup {ts}", notify=False)
-                await api.delete(message, for_me=False)
+                try:
+                    result = await api.send_file(chat_id, str(tmp_path), f"Backup {ts}", notify=False)
+                    print(f"🔍 DEBUG backup: send_file result={result}")
+                    if result:
+                        await api.delete(message, for_me=False)
+                    else:
+                        await api.edit(message, "❌ Не удалось отправить файл бэкапа. Проверь логи.")
+                except Exception as send_err:
+                    print(f"❌ Ошибка отправки бэкапа: {send_err}")
+                    await api.edit(message, f"❌ Ошибка отправки: {send_err}")
+            else:
+                await api.edit(message, "❌ Не удалось определить chat_id для отправки бэкапа")
 
             # Удаляем временный файл
             try:
@@ -467,6 +485,9 @@ async def register(commands):
 
             # Используем API для получения URL файла
             try:
+                chat_id = getattr(message, 'chat_id', None)
+                if chat_id is None:
+                    chat_id = await api.await_chat_id(message)
                 if isinstance(attach0, dict):
                     file_id = attach0.get('fileId')
                     token = attach0.get('token')

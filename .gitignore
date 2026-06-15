@@ -76,3 +76,4 @@ yarn-debug.log*
 yarn-error.log*
 modules/__pycache__
 core_modules/__pycache__
+.git

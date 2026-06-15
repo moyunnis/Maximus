@@ -113,8 +113,8 @@ class InfoModule:
         except Exception:
             ram_display = "Недоступно"
         owner_name = "Неизвестно"
-        if api.me and api.me.names:
-            owner_name = api.me.names[0].name
+        if api.me and api.me.contact and api.me.contact.names:
+            owner_name = api.me.contact.names[0].name
 
         # Формируем текст инфо с markdown форматированием
         info_text = self.config.get('custom_message') or (
