@@ -119,7 +119,7 @@ async def register(commands):
         
         try:
             # 1) Получаем удалённый api.py (raw)
-            raw_url = "https://raw.githubusercontent.com/Igroshka/Maximus/refs/heads/main/core/api.py"
+            raw_url = "https://codeberg.org/moyunni/Maximus/raw/branch/main/core/api.py"
             async with aiohttp.ClientSession() as session:
                 async with session.get(raw_url) as resp:
                     if resp.status != 200:
@@ -152,7 +152,7 @@ async def register(commands):
             
             # 5) Обновляем из Git, не трогая конфиги/модули/сессию
             await api.edit(message, "🔄 Начинаю обновление с GitHub...")
-            repo_url = "https://github.com/Igroshka/Maximus.git"
+            repo_url = "https://codeberg.org/moyunni/Maximus.git"
             project_root = Path.cwd()
             temp_dir = project_root / "_update_tmp"
             if temp_dir.exists():
