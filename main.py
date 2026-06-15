@@ -1,40 +1,29 @@
-# Файл: main.py
-
 import asyncio
 import json
 import websockets
-from pymax import MaxClient, Message
+from pymax import Client, Message
 
 from core.config import config, ALIASES, PHONE
 from core.loader import load_all_modules, COMMANDS, MODULE_COMMANDS
 from core.api import API, log_critical_error
 
-# --- ИНИЦИАЛИЗАЦИЯ ---
 if not PHONE:
-    print("!!! Номер телефона не найден в 'maxli_config.json'. Завершение работы.")
+    print("!!! Номер телефона не найден в 'Maximus_config.json'. Завершение работы.")
     exit()
     
-client = MaxClient(phone=PHONE, work_dir="pymax_session")
+client = Client(phone=PHONE, work_dir="pymax_session")
 api = API(client, config)
 
-# --- СТАНДАРТНЫЙ ОБРАБОТЧИК СООБЩЕНИЙ ---
 @client.on_message()
-async def message_handler(message: Message):
-    # chat_id уже добавлен в сообщение модифицированной библиотекой PyMax
+async def message_handler(message: Message, client: Client):
     from core.api import _append_log
     
-    # В оригинальной библиотеке chat_id может отсутствовать в объекте Message
-    # Поэтому мы должны получить его через API, если его нет
     chat_id = getattr(message, 'chat_id', None)
     
     if chat_id is None:
-        # Пытаемся получить chat_id через API
         chat_id = await api.get_chat_id_for_message(message)
         
-        # Если все еще нет chat_id, но это сообщение от нас, возможно это "Избранное"
-        if chat_id is None and hasattr(client, 'me') and client.me and message.sender == client.me.id:
-             # Проверяем, не является ли это сообщением в "Избранное" (chat_id=0 или id пользователя)
-             # Но пока просто логируем предупреждение
+        if chat_id is None and hasattr(client, 'me') and client.me and message.sender == client.me.contact.id:
              pass
 
     if chat_id is None:
@@ -59,7 +48,7 @@ async def message_handler(message: Message):
     # Проверяем, что команда от самого бота
     is_own = False
     if hasattr(client, 'me') and client.me and hasattr(message, 'sender'):
-        is_own = (message.sender == client.me.id)
+        is_own = (message.sender == client.me.contact.id)
 
     # Обрабатываем команды только если сообщение от нас и начинается с префикса
     current_prefix = config.get('prefix', '.')
@@ -96,8 +85,8 @@ async def message_handler(message: Message):
             print(f"❌ Ошибка в вотчере: {e}")
 
 
-@client.on_start
-async def startup():
+@client.on_start()
+async def startup(client: Client):
     api.set_me(client.me)
      
     # Проверяем информацию о перезапуске
@@ -113,8 +102,8 @@ async def startup():
     print(f"Юзербот {api.BOT_NAME} v{api.BOT_VERSION} запущен!")
     
     # Проверяем, что client.me не None перед обращением к его атрибутам
-    if client.me and client.me.names:
-        print(f"Вошел как: {client.me.names[0].name} ({client.phone})")
+    if client.me and client.me.contact and client.me.contact.names:
+        print(f"Вошел как: {client.me.contact.names[0].name} ({client.phone})")
     else:
         print(f"Вошел как: {client.phone} (профиль не загружен)")
     
@@ -122,7 +111,7 @@ async def startup():
 
 if __name__ == "__main__":
     import logging
-    log = logging.getLogger("maxli.LOG_BUFFER")
+    log = logging.getLogger("Maximus.LOG_BUFFER")
     if not log.hasHandlers():
         handler = logging.StreamHandler()
         formatter = logging.Formatter("%(asctime)s [LOG_BUFFER] %(message)s")
@@ -138,14 +127,15 @@ if __name__ == "__main__":
                 await client.start()
             except (asyncio.CancelledError, asyncio.TimeoutError) as e:
                 import logging
-                logging.getLogger("maxli.LOG_BUFFER").warning(f"[reconnect] [asyncio error] {type(e).__name__}: {e}. Повтор через 2 секунды...")
+                logging.getLogger("Maximus.LOG_BUFFER").warning(f"[reconnect] [asyncio error] {type(e).__name__}: {e}. Повтор через 2 секунды...")
                 await asyncio.sleep(2)
             except Exception as e:
                 import logging
-                logging.getLogger("maxli.LOG_BUFFER").warning(f"[reconnect] Ошибка запуска клиента: {e}. Повтор через 2 секунды...")
+                logging.getLogger("Maximus.LOG_BUFFER").warning(f"[reconnect] Ошибка запуска клиента: {e}. Повтор через 2 секунды...")
                 await asyncio.sleep(2)
             except BaseException as e:
                 import logging
-                logging.getLogger("maxli.LOG_BUFFER").warning(f"[reconnect] [BaseException] {type(e).__name__}: {e}. Повтор через 2 секунды...")
+                logging.getLogger("Maximus.LOG_BUFFER").warning(f"[reconnect] [BaseException] {type(e).__name__}: {e}. Повтор через 2 секунды...")
                 await asyncio.sleep(2)
     asyncio.run(run_with_reconnect())
+

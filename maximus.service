@@ -1,12 +1,12 @@
 [Unit]
-Description=Maxli UserBot
+Description=Maximus UserBot
 After=network.target
 
 [Service]
 Type=simple
 User=root
 WorkingDirectory=/path/to/Maxli
-ExecStart=/path/to/Maxli/venv/bin/python3 main.py
+ExecStart=/path/to/Maximus/venv/bin/python3 main.py
 Restart=always
 RestartSec=10
 

@@ -1,8 +1,8 @@
 # name: SystemInfo
 # version: 1.0.0
-# developer: @gemeguardian (ported for Maxli) & @YouRooni
+# developer: @gemeguardian (ported for Maximus) & @YouRooni
 # dependencies: psutil
-# min-maxli: 26
+# min-Maximus: 26
 
 import os
 import platform
@@ -146,3 +146,4 @@ async def sysinfo_command(api, message, args):
 
 async def register(api):
     api.register_command("sysinfo", sysinfo_command)
+

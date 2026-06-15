@@ -55,7 +55,7 @@ async def register(commands):
             # Список только тех системных модулей, у которых есть зарегистрированные переменные
             available = []
             for m in system_modules:
-                norm = f"{m}_maxli"
+                norm = f"{m}_Maximus"
                 ext = config.get("external_modules", {}).get(norm, {})
                 if ext.get("settings"):
                     available.append((m, ext))
@@ -98,7 +98,7 @@ async def register(commands):
         if section == "external":
             ext_all = config.get("external_modules", {})
             # Только внешние модули, у которых есть переменные
-            external_keys = [k for k, v in ext_all.items() if not k.endswith("_maxli") and v.get("settings")]
+            external_keys = [k for k, v in ext_all.items() if not k.endswith("_Maximus") and v.get("settings")]
             if len(args) == 1:
                 if not external_keys:
                     await api.edit(message, "📭 Нет внешних модулей с переменными")

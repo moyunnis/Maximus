@@ -2,7 +2,7 @@
 # version: 1.0.0
 # developer: rorolb
 # dependencies: asyncio
-# min-maxli: 26
+# min-Maximus: 26
 # id: terminal
 
 import asyncio

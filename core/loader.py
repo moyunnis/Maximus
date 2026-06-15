@@ -1,4 +1,3 @@
-# Файл: core/loader.py (v0.2.4)
 import importlib.util
 import sys
 import subprocess
@@ -126,14 +125,14 @@ def parse_module_header(path: Path):
         "version": None, 
         "developer": None, 
         "dependencies": [], 
-        "min-maxli": None, 
+        "min-Maximus": None, 
         "id": None,
         "description": None
     }
     with open(path, 'r', encoding='utf-8') as f:
         for line in f.readlines()[:15]:  # Увеличиваем количество строк для поиска
             if line.startswith('#'):
-                for key in ["name", "version", "developer", "dependencies", "min-maxli", "id", "description"]:
+                for key in ["name", "version", "developer", "dependencies", "min-Maximus", "id", "description"]:
                     match = re.search(rf"^\s*#\s*{key}\s*:\s*(.+)", line)
                     if match:
                         value = match.group(1).strip()
@@ -174,7 +173,7 @@ async def load_module(module_path: Path, api):
     original_watchers = []
     
     # Валидация обязательных полей
-    required_fields = ["name", "version", "developer", "min-maxli", "id"]
+    required_fields = ["name", "version", "developer", "min-Maximus", "id"]
     missing_fields = [field for field in required_fields if not header.get(field)]
     
     if missing_fields:
@@ -209,9 +208,9 @@ async def load_module(module_path: Path, api):
         except Exception as e:
             return f"❌ Ошибка переименования модуля: {e}"
     
-    required_version = int(header["min-maxli"])
+    required_version = int(header["min-Maximus"])
     current_version = BOT_VERSION_CODE
-    if current_version < required_version: return f"❌ Ошибка: модуль '{header['name']}' требует Maxli v{header['min-maxli']}. Ваша версия: v{BOT_VERSION_CODE}."
+    if current_version < required_version: return f"❌ Ошибка: модуль '{header['name']}' требует Maximus v{header['min-Maximus']}. Ваша версия: v{BOT_VERSION_CODE}."
     
     # Устанавливаем зависимости с возможностью отката
     installed_dependencies = []

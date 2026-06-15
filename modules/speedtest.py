@@ -2,7 +2,7 @@
 # version: 1.0.0
 # developer: @gemeguardian
 # dependencies: speedtest-cli
-# min-maxli: 26
+# min-Maximus: 26
 
 import datetime
 import time
@@ -194,3 +194,4 @@ async def speedtest_command(api, message, args):
 async def register(api):
     """Регистрирует команды модуля."""
     api.register_command("speedtest", speedtest_command)
+

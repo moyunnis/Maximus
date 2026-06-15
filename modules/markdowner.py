@@ -2,7 +2,7 @@
 # version: 1.0.0
 # developer: @YouRooni
 # id: markdowner
-# min-maxli: 34
+# min-Maximus: 34
 
 async def markdown_command(api, message, args):
     """Редактирует сообщение, применяя к нему Markdown форматирование."""

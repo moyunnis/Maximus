@@ -1,7 +1,7 @@
 import json
 from typing import Any, Dict
 
-CONFIG_FILE = "maxli_config.json"
+CONFIG_FILE = "Maximus_config.json"
 
 def _ensure_defaults(conf: Dict[str, Any]) -> Dict[str, Any]:
     if "phone" not in conf or not conf["phone"]:
@@ -21,7 +21,7 @@ def _ensure_defaults(conf: Dict[str, Any]) -> Dict[str, Any]:
     # Глобальные тексты (шаблоны) с подстановкой переменных
     if "texts" not in conf:
         conf["texts"] = {
-            "module_loaded": "✅ Модуль '{name}' v{version} установлен (Maxli v{maxli_version})",
+            "module_loaded": "✅ Модуль '{name}' v{version} установлен (Maximus v{Maximus_version})",
             "module_unloaded": "✅ Модуль '{name}' удалён",
         }
     # Реестр настроек внешних модулей
@@ -68,7 +68,7 @@ def register_module_settings(module_name: str, settings_schema: Dict[str, Any]):
     reserved_names = {"info", "management", "ping", "settings", "modules", "restart"}
     normalized_name = module_name
     if module_name in reserved_names:
-        normalized_name = f"{module_name}_maxli"
+        normalized_name = f"{module_name}_Maximus"
     if normalized_name not in conf["external_modules"]:
         conf["external_modules"][normalized_name] = {"settings": {}, "descriptions": {}}
     for key, meta in (settings_schema or {}).items():
@@ -84,7 +84,7 @@ def register_module_settings(module_name: str, settings_schema: Dict[str, Any]):
 def get_module_setting(module_name: str, key: str, default: Any = None) -> Any:
     # С учётом нормализации имён
     reserved_names = {"info", "management", "ping", "settings", "modules", "restart"}
-    normalized_name = f"{module_name}_maxli" if module_name in reserved_names else module_name
+    normalized_name = f"{module_name}_Maximus" if module_name in reserved_names else module_name
     return config.get("external_modules", {}).get(normalized_name, {}).get("settings", {}).get(key, default)
 
 def get_banner_url(command_name: str) -> str:

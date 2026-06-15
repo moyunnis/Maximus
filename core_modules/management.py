@@ -101,7 +101,7 @@ async def register(commands):
                 continue
             module_name = file.stem
             # Пропускаем системные нормализованные имена
-            if module_name.endswith("_maxli"):
+            if module_name.endswith("_Maximus"):
                 continue
             try:
                 res = await load_module(file, api)
@@ -115,11 +115,11 @@ async def register(commands):
     
     async def update_command(api, message, args):
         """Проверяет обновление и обновляет ядро из GitHub."""
-        await api.edit(message, "⏳ Проверяю обновления Maxli...")
+        await api.edit(message, "⏳ Проверяю обновления Maximus...")
         
         try:
             # 1) Получаем удалённый api.py (raw)
-            raw_url = "https://raw.githubusercontent.com/Igroshka/Maxli/refs/heads/main/core/api.py"
+            raw_url = "https://raw.githubusercontent.com/Igroshka/Maximus/refs/heads/main/core/api.py"
             async with aiohttp.ClientSession() as session:
                 async with session.get(raw_url) as resp:
                     if resp.status != 200:
@@ -152,7 +152,7 @@ async def register(commands):
             
             # 5) Обновляем из Git, не трогая конфиги/модули/сессию
             await api.edit(message, "🔄 Начинаю обновление с GitHub...")
-            repo_url = "https://github.com/Igroshka/Maxli.git"
+            repo_url = "https://github.com/Igroshka/Maximus.git"
             project_root = Path.cwd()
             temp_dir = project_root / "_update_tmp"
             if temp_dir.exists():
@@ -164,8 +164,8 @@ async def register(commands):
             from git import Repo
             Repo.clone_from(repo_url, str(temp_dir))
             
-            # Список системных путей для обновления (не трогаем modules/, pymax_session/, maxli_config.json)
-            preserve = {"modules", "pymax_session", "maxli_config.json", ".git", ".gitignore"}
+            # Список системных путей для обновления (не трогаем modules/, pymax_session/, Maximus_config.json)
+            preserve = {"modules", "pymax_session", "Maximus_config.json", ".git", ".gitignore"}
             copy_roots = ["core", "core_modules", "pymax", "main.py", "install_linux.sh", "install_windows.bat", "README.md"]
             
             import shutil
@@ -188,7 +188,7 @@ async def register(commands):
             await api.edit(message, "✅ Обновление установлено. Перезапуск...")
             # Переиспользуем логику перезапуска
             from core_modules.restart import restart_command
-            await restart_command(api, message, ["Обновление Maxli"])
+            await restart_command(api, message, ["Обновление Maximus"])
             
         except Exception as e:
             await api.edit(message, f"❌ Ошибка обновления: {e}")
@@ -239,12 +239,12 @@ async def register(commands):
                 # 1) Сохраняем конфиг без phone во временный файл
                 conf_copy = dict(core_config)
                 conf_copy.pop('phone', None)
-                config_tmp_path = Path("maxli_config.json")
+                config_tmp_path = Path("Maximus_config.json")
                 with open(config_tmp_path, 'w', encoding='utf-8') as f:
                     json.dump(conf_copy, f, ensure_ascii=False, indent=2)
                 with zipfile.ZipFile(tmp_path, 'w', zipfile.ZIP_DEFLATED) as z:
-                    # 1) добавляем maxli_config.json
-                    z.write(config_tmp_path, 'maxli_config.json')
+                    # 1) добавляем Maximus_config.json
+                    z.write(config_tmp_path, 'Maximus_config.json')
                     # 2) модули и любые файлы в папке MODULES_DIR
                     MODULES_DIR.mkdir(exist_ok=True)
                     modules = []
@@ -261,7 +261,7 @@ async def register(commands):
                         'modules': modules,
                     }
                     z.writestr('meta.json', json.dumps(meta, ensure_ascii=False, indent=2))
-                # Удаляем временный maxli_config.json
+                # Удаляем временный Maximus_config.json
                 try:
                     config_tmp_path.unlink()
                 except Exception:
@@ -318,13 +318,13 @@ async def register(commands):
 
             def apply_backup():
                 tmp_zip = info['path']
-                extract_dir = Path(tempfile.mkdtemp(prefix='maxli_backup_'))
+                extract_dir = Path(tempfile.mkdtemp(prefix='Maximus_backup_'))
                 try:
                     with zipfile.ZipFile(tmp_zip, 'r') as z:
                         z.extractall(extract_dir)
 
                     # 1) Восстановление конфигурации (не трогаем phone)
-                    cfg_path = extract_dir / 'maxli_config.json'
+                    cfg_path = extract_dir / 'Maximus_config.json'
                     if cfg_path.exists():
                         with open(cfg_path, 'r', encoding='utf-8') as f:
                             new_conf = json.load(f)

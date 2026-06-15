@@ -1,4 +1,3 @@
-# Файл: core_modules/restart.py
 import asyncio
 import json
 import time
@@ -130,3 +129,4 @@ async def update_restart_complete(api):
 
 async def register(commands):
     commands["restart"] = restart_command
+

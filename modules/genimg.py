@@ -1,7 +1,7 @@
 # name: Генератор изображений
 # version: 1.0.0
-# developer: @YouRooni - Maxli Dev
-# min-maxli: 26
+# developer: @YouRooni - Maximus Dev
+# min-Maximus: 26
 
 import aiohttp
 import aiofiles
@@ -125,3 +125,4 @@ async def register(api):
     """Регистрирует команды модуля."""
     api.register_command("genimg", genimg_command)
     api.register_command("genimgmodel", genimgmodel_command)
+

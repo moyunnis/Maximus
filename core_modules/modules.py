@@ -1,4 +1,3 @@
-# Файл: core_modules/modules.py
 import asyncio
 import aiohttp
 import aiofiles
@@ -505,3 +504,4 @@ async def load_from_file(api, message):
 
 async def register(commands):
     commands["load"] = load_command
+

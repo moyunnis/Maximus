@@ -1,54 +1,56 @@
 <p align="center">
-  <img src="https://github.com/Igroshka/Maxli/blob/main/logo.png?raw=true" alt="Maxli Logo" width="150" style="border-radius:50% !important;" />
+  <img src="./logo.png" alt="Maximus Logo" width="150" style="border-radius:50% !important;" />
 </p>
 
-<h1 align="center">Maxli — UserBot для мессенджера "Max"</h1>
+<h1 align="center">Maximus — UserBot для мессенджера "Max"</h1>
 
 <p align="center">
-  <a href="https://github.com/Igroshka/Maxli/stargazers"><img src="https://img.shields.io/github/stars/Igroshka/Maxli?style=for-the-badge&logo=github&color=FFC107" alt="Stars"></a>
-  <a href="https://github.com/Igroshka/Maxli/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Igroshka/Maxli?style=for-the-badge&color=8BC34A" alt="License"></a>
-  <a href="https://UserbotMax.t.me"><img src="https://img.shields.io/badge/Telegram-Новости-blue?style=for-the-badge&logo=telegram" alt="Telegram Channel"></a>
+  <a href="https://codeberg.org/moyunni/Maximus/stars"><img src="https://img.shields.io/badge/dynamic/json?color=FFC107&style=for-the-badge&logo=codeberg&label=Stars&query=%24.stars&url=https%3A%2F%2Fcodeberg.org%2Fapi%2Fv1%2Frepos%2Fmoyunni%2FMaximus" alt="Stars"></a>
+  <a href="https://codeberg.org/moyunni/Maximus/src/branch/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-8BC34A?style=for-the-badge" alt="License"></a>
+  <a href="https://t.me/moyunni_room"><img src="https://img.shields.io/badge/Telegram-Новости-blue?style=for-the-badge&logo=telegram" alt="Telegram Channel"></a>
 </p>
 
 <p align="center">
-  ⚡️ Первый и лучший UserBot для мессенджера <b>Max</b> с удобной и гибкой системой модулей.  
+  ⚡️ Лучший UserBot для мессенджера <b>Max</b> с удобной системой модулей и легкостью.
   <br>
-  Создан <a href="https://t.me/YouRooni">YouRooni</a> с ❤️
+  Создан <a href="https://t.me/moyunnie">Moyunni</a> с ❤️
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Igroshka/Maxli/refs/heads/main/banner1.png" alt="Maxli Banner" width="100%" style="border-radius:5% !important;" />
+  <img src="./banner1.png" alt="Maximus Banner" width="100%" style="border-radius:5% !important;" />
 </p>
 
 ---
 
-## 🚀 О проекте
+## О проекте
 
-Maxli — это новаторский UserBot для мессенджера Max, разработанный для автоматизации рутинных действий и расширения стандартного функционала. Это первый в своем роде юзербот для данной платформы, предлагающий пользователям непревзойденные возможности.
+**Maximus** — это новаторский UserBot для мессенджера Max, разработанный для автоматизации рутинных действий и расширения стандартного функционала. Это первый в своем роде юзербот для данной платформы, предлагающий пользователям непревзойденные возможности.
 
-Проект работает на Python и использует библиотеку [PyMax (maxapi-python)](https://fresh-milkshake.github.io/pymax/) для взаимодействия с API мессенджера Max. Благодаря своей архитектуре, Maxli легко запускается как на VDS/VPS, так и на локальной машине, а его система плагинов обеспечивает простую кастомизацию и расширение.
-
----
-
-## ✨ Ключевые возможности
-
-- 🤖 **Автоматизация:** Настраивайте автоматические ответы, команды и сценарии
-- 🧩 **Гибкая система модулей:** Расширяйте функционал с помощью готовых плагинов или создавайте свои
-- 💬 **Поддержка чатов:** Стабильная работа в личных сообщениях и групповых чатах
-- 🚀 **Простая установка:** Готовые скрипты для быстрой установки на Windows и Linux
-- ⚙️ **Удобная настройка:** Конфигурация через простые и понятные файлы
+Проект работает на Python и использует библиотеку [PyMax (maxapi-python)](https://github.com/MaxApiTeam/PyMax) для взаимодействия с API мессенджера Max. Благодаря своей архитектуре, Maximus легко запускается как на VDS/VPS, так и на локальной машине, а его система плагинов обеспечивает простую кастомизацию и расширение.
 
 ---
 
-## 📢 Новости и поддержка
+## Ключевые возможности
+
+- **Автоматизация:** Настраивайте автоматические ответы, команды и сценарии
+- **Гибкая система модулей:** Расширяйте функционал с помощью готовых плагинов или создавайте свои
+- **Поддержка чатов:** Стабильная работа в личных сообщениях и групповых чатах
+- **Простая установка:** Готовые скрипты для быстрой установки на Windows и Linux
+- **Удобная настройка:** Конфигурация через простые и понятные файлы
+- **Markdown:** Поддержка форматирования текста (жирный, курсив, подчёркивание)
+- **Медиа:** Отправка фото, файлов и видео
+
+---
+
+## Новости и поддержка
 
 Все актуальные новости, обновления и полезную информацию о проекте вы найдете в нашем официальном Telegram-канале.
 
-➡️ **Подписаться на канал:** [UserbotMax.t.me](https://UserbotMax.t.me)
+➡️ **Подписаться на канал:** [moyunni_room.t.me](https://t.me/moyunni_room)
 
 ---
 
-## 📋 Требования
+## Требования
 
 Перед установкой убедитесь, что у вас установлено:
 
@@ -61,7 +63,7 @@ Maxli — это новаторский UserBot для мессенджера Ma
 ### Установка Python
 
 <details>
-<summary><b>🖥️ Windows</b></summary>
+<summary><b>Windows</b></summary>
 
 1. Скачайте Python с официального сайта: https://www.python.org/downloads/
 2. **Важно:** При установке обязательно поставьте галочку ✅ **"Add Python to PATH"**
@@ -71,7 +73,7 @@ Maxli — это новаторский UserBot для мессенджера Ma
 </details>
 
 <details>
-<summary><b>🐧 Linux (Ubuntu/Debian)</b></summary>
+<summary><b>Linux (Ubuntu/Debian)</b></summary>
 
 ```bash
 sudo apt update
@@ -81,7 +83,7 @@ sudo apt install python3.12 python3.12-venv python3-pip git -y
 </details>
 
 <details>
-<summary><b>🍎 macOS</b></summary>
+<summary><b>macOS</b></summary>
 
 ```bash
 # Через Homebrew
@@ -92,34 +94,21 @@ brew install python@3.12 git
 
 ---
 
-## 🛠️ Установка
+## Установка
 
-### 🖥️ Windows
-
-<details>
-<summary><b>📦 Способ 1: Автоматическая установка (рекомендуется)</b></summary>
-
-1. [Скачайте ZIP-архив](https://github.com/Igroshka/Maxli/archive/refs/heads/main.zip) или склонируйте репозиторий
-2. Распакуйте архив в удобную папку (например `C:\Maxli`)
-3. Запустите файл `install_windows.bat` двойным кликом
-4. Следуйте инструкциям в консоли:
-   - Введите номер телефона в формате `+79001234567`
-   - Введите код подтверждения из мессенджера Max
-5. Готово! Бот запущен 🎉
-
-</details>
+### Windows
 
 <details>
-<summary><b>⌨️ Способ 2: Ручная установка через PowerShell</b></summary>
+<summary><b>Ручная установка через PowerShell</b></summary>
 
 Откройте PowerShell и выполните команды по очереди:
 
 ```powershell
 # 1. Клонируем репозиторий
-git clone https://github.com/Igroshka/Maxli.git
+git clone https://codeberg.org/moyunni/Maximus.git
 
 # 2. Переходим в папку проекта
-cd Maxli
+cd Maximus
 
 # 3. Создаём виртуальное окружение
 python -m venv venv
@@ -142,47 +131,24 @@ python main.py
 
 ---
 
-### 🐧 Linux
+### Linux
 
 <details>
-<summary><b>📦 Способ 1: Автоматическая установка (рекомендуется)</b></summary>
-
-```bash
-# 1. Клонируем репозиторий
-git clone https://github.com/Igroshka/Maxli.git
-
-# 2. Переходим в папку
-cd Maxli
-
-# 3. Даём права на выполнение скрипта
-chmod +x install_linux.sh
-
-# 4. Запускаем установку
-./install_linux.sh
-```
-
-Следуйте инструкциям:
-- Введите номер телефона в формате `+79001234567`
-- Введите код подтверждения из мессенджера Max
-
-</details>
-
-<details>
-<summary><b>⌨️ Способ 2: Ручная установка</b></summary>
+<summary><b>Ручная установка</b></summary>
 
 ```bash
 # Всё в одной команде:
-git clone https://github.com/Igroshka/Maxli.git && cd Maxli && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python3 main.py
+git clone https://codeberg.org/moyunni/Maximus.git && cd Maximus && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python3 main.py
 ```
 
 **Или пошагово:**
 
 ```bash
 # 1. Клонируем репозиторий
-git clone https://github.com/Igroshka/Maxli.git
+git clone https://codeberg.org/moyunni/Maximus.git
 
 # 2. Переходим в папку проекта
-cd Maxli
+cd Maximus
 
 # 3. Создаём виртуальное окружение
 python3 -m venv venv
@@ -201,35 +167,37 @@ python3 main.py
 
 ---
 
-### 🔄 Повторный запуск
+## Быстрый запуск
 
-После установки для запуска бота достаточно:
+После установки для запуска бота достаточно использовать стартовые скрипты:
 
-**Windows (PowerShell):**
+**Windows:**
 ```powershell
-cd C:\путь\к\Maxli
-venv\Scripts\activate
-python main.py
+# Просто дважды кликните по start.bat
+# Или в PowerShell:
+.\run.bat
 ```
 
 **Linux:**
 ```bash
-cd ~/Maxli
-source venv/bin/activate
-python3 main.py
+# Сделайте скрипт исполняемым (один раз):
+chmod +x run.sh
+
+# Запускайте:
+./run.sh
 ```
 
 ---
 
-## 🔄 Автозапуск
+## Автозапуск
 
 <details>
-<summary><b>🖥️ Windows — через Планировщик задач</b></summary>
+<summary><b>Windows — через Планировщик задач</b></summary>
 
 1. Откройте Планировщик задач (нажмите `Win+R`, введите `taskschd.msc`)
 2. Нажмите **"Создать задачу..."** (не "Создать простую задачу")
 3. На вкладке **"Общие"**:
-   - Название: `Maxli`
+   - Название: `Maximus`
    - Поставьте галочку "Выполнять с наивысшими правами"
 4. На вкладке **"Триггеры"**:
    - Нажмите "Создать..."
@@ -238,23 +206,23 @@ python3 main.py
 5. На вкладке **"Действия"**:
    - Нажмите "Создать..."
    - Действие: "Запуск программы"
-   - Программа: путь к `autostart.bat` в папке Maxli
+   - Программа: путь к `run.bat` в папке Maximus
    - ОК
 6. Сохраните задачу
 
 </details>
 
 <details>
-<summary><b>🐧 Linux — через systemd</b></summary>
+<summary><b>Linux — через systemd (systemd хуйня, btw)</b></summary>
 
 1. Отредактируйте файл сервиса (укажите ваш путь и пользователя):
    ```bash
-   nano maxli.service
+   nano maximus.service
    ```
    
 2. Скопируйте сервис в системную директорию:
    ```bash
-   sudo cp maxli.service /etc/systemd/system/
+   sudo cp maximus.service /etc/systemd/system/
    ```
 
 3. Перезагрузите конфигурацию systemd:
@@ -264,49 +232,36 @@ python3 main.py
 
 4. Включите автозапуск:
    ```bash
-   sudo systemctl enable maxli
+   sudo systemctl enable maximus
    ```
 
 5. Запустите сервис:
    ```bash
-   sudo systemctl start maxli
+   sudo systemctl start maximus
    ```
 
 6. Проверьте статус:
    ```bash
-   sudo systemctl status maxli
+   sudo systemctl status maximus
    ```
 
 </details>
 
 ---
 
-## 📁 Структура проекта
+## Структура проекта
 
 ```
-Maxli/
-├── 📄 main.py              # ▶️ Основной файл для запуска
-├── 📁 core/                # ⚙️ Ядро и ключевые компоненты
-│   ├── api.py              #    API-обёртка над PyMax
-│   ├── config.py           #    Конфигурация
-│   └── loader.py           #    Загрузчик модулей
-├── 📁 core_modules/        # 🔧 Встроенные модули
-├── 📁 modules/             # 🧩 Ваши пользовательские модули
-├── 📁 mods/                # 📚 Документация по созданию модулей
-│   └── README.md           #    Руководство разработчика
-├── 📄 requirements.txt     # 📦 Список зависимостей
-├── 📄 install_windows.bat  # 🖥️ Скрипт установки для Windows
-├── 📄 install_linux.sh     # 🐧 Скрипт установки для Linux
-└── 📄 README.md            # 📄 Эта документация
+ЕЕ СЪЕЛИ КРОКОДИЛЫ
 ```
 
 ---
 
-## 🧩 Создание модулей
+## Создание модулей
 
-Хотите создать свой модуль? Ознакомьтесь с [документацией для разработчиков](mods/README.md).
+Хотите создать свой модуль? ЗАЙДИТЕ В **[!!!ПОРТАЛ В РОБЛОКС!!!](mods/README.md)**.
 
-Maxli использует библиотеку **[PyMax](https://fresh-milkshake.github.io/pymax/)** — вы можете использовать все её возможности в своих модулях!
+Maximus использует библиотеку **[PyMax](https://github.com/MaxApiTeam/PyMax)** — вы можете использовать все её возможности в своих модулях!
 
 ### Быстрый пример модуля:
 
@@ -315,11 +270,11 @@ Maxli использует библиотеку **[PyMax](https://fresh-milkshak
 # version: 1.0.0
 # developer: Ваше имя
 # id: my_module
-# min-maxli: 35
+# min-Maximus: 100
 
 async def hello_command(api, message, args):
     """Простое приветствие."""
-    await api.edit(message, "👋 **Привет!**", markdown=True)
+    await api.edit(message, "**Привет!**", markdown=True)
 
 async def register(api):
     api.register_command("hello", hello_command)
@@ -327,7 +282,7 @@ async def register(api):
 
 ---
 
-## ❓ Частые вопросы
+## Частые самые тупые вопросы
 
 <details>
 <summary><b>Где взять код подтверждения?</b></summary>
@@ -349,7 +304,7 @@ async def register(api):
 <summary><b>Как обновить бота?</b></summary>
 
 ```bash
-cd Maxli
+cd Maximus
 git pull
 pip install -r requirements.txt --upgrade
 ```
@@ -359,13 +314,13 @@ pip install -r requirements.txt --upgrade
 <details>
 <summary><b>Как удалить сессию и войти заново?</b></summary>
 
-Удалите файл `session.json` в папке проекта и перезапустите бота.
+Удалите папку `pymax_session/` в папке проекта и перезапустите бота.
 
 </details>
 
 ---
 
-## 📜 Лицензия
+## Лицензия
 
 Этот проект распространяется под лицензией **Apache License 2.0**. 
 
@@ -374,5 +329,7 @@ pip install -r requirements.txt --upgrade
 ---
 
 <p align="center">
-  <b>⭐ Если вам нравится проект, поставьте звезду на GitHub! ⭐</b>
+  <b>⭐ Если вам нравится проект, поставьте звезду на Codeberg! ⭐</b>
 </p>
+
+- Проект является улучшенным форком [Maxli](https://github.com/Igroshka/Maxli/tree/main)
