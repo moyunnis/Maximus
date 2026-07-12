@@ -346,6 +346,38 @@ class API:
         except Exception:
             return None
 
+    def get_reply(self, message):
+        """Вложенное сообщение-ответ (dict) или None.
+
+        pymax кладёт reply в сырое поле link (type=REPLY), где link['message']
+        — процитированное сообщение с полями id, sender, text, attaches.
+        """
+        link = getattr(message, 'link', None)
+        if link is None and getattr(message, 'model_extra', None):
+            link = message.model_extra.get('link')
+        if not link:
+            return None
+        if not isinstance(link, dict):
+            link = getattr(link, '__dict__', {}) or {}
+        replied = link.get('message')
+        return replied if isinstance(replied, dict) else None
+
+    def get_reply_id(self, message):
+        """ID сообщения, на которое отвечает reply, или None."""
+        replied = self.get_reply(message)
+        if not replied:
+            return None
+        rid = replied.get('id')
+        try:
+            return int(rid)
+        except (ValueError, TypeError):
+            return rid
+
+    def get_reply_sender(self, message):
+        """ID автора сообщения, на которое отвечает reply, или None."""
+        replied = self.get_reply(message)
+        return replied.get('sender') if replied else None
+
     def get_sender_name(self, message):
         """Получает имя отправителя сообщения."""
         sender_id = getattr(message, 'sender', None)

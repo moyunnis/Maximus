@@ -5,7 +5,7 @@ from core.config import PREFIX
 
 
 async def uptime_command(api, message, args):
-    await api.edit(message, f"⏱ Аптайм: {api.get_uptime()}", markdown=True)
+    await api.edit(message, f"🕐 Аптайм: {api.get_uptime()}", markdown=True)
 
 
 async def id_command(api, message, args):
@@ -14,16 +14,10 @@ async def id_command(api, message, args):
 
     out = ["🆔 Идентификаторы\n", f"💬 Чат: `{chat_id}`", f"👤 Ты: `{sender}`"]
 
-    reply = getattr(message, "reply_to_message", None)
+    reply = api.get_reply(message)
     if reply:
-        if isinstance(reply, dict):
-            r_sender, r_id = reply.get("sender"), reply.get("id")
-        else:
-            r_sender, r_id = getattr(reply, "sender", None), getattr(reply, "id", None)
-        if r_sender is not None:
-            out.append(f"↩️ Автор реплая: `{r_sender}`")
-        if r_id is not None:
-            out.append(f"📩 ID реплая: `{r_id}`")
+        out.append(f"↩️ Автор реплая: `{reply.get('sender')}`")
+        out.append(f"📩 ID реплая: `{reply.get('id')}`")
 
     await api.edit(message, "\n".join(out), markdown=True)
 
@@ -67,53 +61,7 @@ async def calc_command(api, message, args):
         await api.edit(message, f"❌ Не посчитать: {e}", markdown=True)
 
 
-async def repeat_command(api, message, args):
-    if len(args) < 2 or not args[0].isdigit():
-        await api.edit(message, f"⚠️ {PREFIX}repeat [число] [текст]", markdown=True)
-        return
-    count = int(args[0])
-    if not 1 <= count <= 50:
-        await api.edit(message, "⚠️ От 1 до 50", markdown=True)
-        return
-    text = " ".join(args[1:])
-    chat_id = getattr(message, "chat_id", None) or await api.await_chat_id(message)
-    if chat_id is None:
-        await api.edit(message, "❌ Не понял чат", markdown=True)
-        return
-    await api.delete(message)
-    for _ in range(count):
-        await api.send(chat_id, text)
-
-
-async def whois_command(api, message, args):
-    if args and args[0].lstrip("-").isdigit():
-        user_id = int(args[0])
-    else:
-        reply = getattr(message, "reply_to_message", None)
-        user_id = None
-        if reply:
-            user_id = reply.get("sender") if isinstance(reply, dict) else getattr(reply, "sender", None)
-    if user_id is None:
-        await api.edit(message, f"⚠️ Реплай или {PREFIX}whois 123", markdown=True)
-        return
-
-    await api.edit(message, "🔍 Ищу...", markdown=True)
-    info = await api.get_user_info(user_id)
-    if not info:
-        await api.edit(message, f"❌ Юзер `{user_id}` не найден", markdown=True)
-        return
-
-    name = info.names[0].name if getattr(info, "names", None) else "неизвестно"
-    out = ["👤 Пользователь\n", f"📛 Имя: {name}", f"🆔 ID: `{user_id}`"]
-    phone = getattr(info, "phone", None)
-    if phone:
-        out.append(f"📱 Телефон: {phone}")
-    await api.edit(message, "\n".join(out), markdown=True)
-
-
 async def register(commands):
     commands["uptime"] = uptime_command
     commands["id"] = id_command
     commands["calc"] = calc_command
-    commands["repeat"] = repeat_command
-    commands["whois"] = whois_command

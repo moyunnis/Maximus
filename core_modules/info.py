@@ -136,7 +136,7 @@ class InfoModule:
         info_text = self.config.get('custom_message') or (
             f"🤖 **{api.BOT_NAME}** *v{api.BOT_VERSION} (#{api.BOT_VERSION_CODE})*\n\n"
             f"👤 **Владелец:** {owner_name}\n"
-            f"⏱ **Аптайм:** {uptime}\n"
+            f"🕐 **Аптайм:** {uptime}\n"
             f"🧩 **Модулей:** {modules_count}  •  **Команд:** {commands_count}\n\n"
             f"🖥 **Хост:**\n"
             f"    🐍 **Python:** {python_version}\n"

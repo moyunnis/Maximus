@@ -9,7 +9,7 @@ async def ping_command(api, message, args):
     end_time = time.time()
     ping_ms = round((end_time - start_time) * 1000, 2)
     uptime = api.get_uptime() if hasattr(api, "get_uptime") else "?"
-    text = f"🏓 Понг!\n⏱ Задержка: {ping_ms} мс\n⏳ Аптайм: {uptime}"
+    text = f"🏓 Понг!\n⚡ Задержка: {ping_ms} мс\n🕐 Аптайм: {uptime}"
     banner = get_banner_url("ping")
     if banner:
         chat_id = getattr(message, 'chat_id', None) or await api.await_chat_id(message)
