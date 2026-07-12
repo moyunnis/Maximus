@@ -65,7 +65,7 @@ def register_module_settings(module_name: str, settings_schema: Dict[str, Any]):
     """
     conf = config
     # Зарезервированные системные имена модулей
-    reserved_names = {"info", "management", "ping", "settings", "modules", "restart"}
+    reserved_names = {"info", "management", "ping", "settings", "modules", "restart", "tools"}
     normalized_name = module_name
     if module_name in reserved_names:
         normalized_name = f"{module_name}_Maximus"
@@ -83,7 +83,7 @@ def register_module_settings(module_name: str, settings_schema: Dict[str, Any]):
 
 def get_module_setting(module_name: str, key: str, default: Any = None) -> Any:
     # С учётом нормализации имён
-    reserved_names = {"info", "management", "ping", "settings", "modules", "restart"}
+    reserved_names = {"info", "management", "ping", "settings", "modules", "restart", "tools"}
     normalized_name = f"{module_name}_Maximus" if module_name in reserved_names else module_name
     return config.get("external_modules", {}).get(normalized_name, {}).get("settings", {}).get(key, default)
 

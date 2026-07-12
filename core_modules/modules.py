@@ -105,70 +105,17 @@ def fuzzy_find_module(query):
 
 async def load_command(api, message, args):
     """Улучшенная команда загрузки модулей."""
-    # Отладочный вывод JSON сообщения
-    print("🔍 DEBUG: JSON сообщения для команды load:")
-    print(f"   ID: {message.id}")
-    print(f"   Sender: {message.sender}")
-    print(f"   Chat ID: {getattr(message, 'chat_id', 'НЕТ')}")
-    print(f"   Text: {message.text}")
-    print(f"   Reply to: {getattr(message, 'reply_to_message', 'НЕТ')}")
-    if hasattr(message, 'reply_to_message') and message.reply_to_message:
-        if isinstance(message.reply_to_message, dict):
-            print(f"     Reply message ID: {message.reply_to_message.get('id', 'НЕТ')}")
-            print(f"     Reply message text: {message.reply_to_message.get('text', 'НЕТ')}")
-            print(f"     Reply message attaches: {len(message.reply_to_message.get('attaches', []))}")
-            if message.reply_to_message.get('attaches'):
-                for i, attach in enumerate(message.reply_to_message['attaches']):
-                    print(f"       Вложение {i+1}: {attach.get('name', 'БЕЗ_ИМЕНИ')} - {attach.get('token', 'БЕЗ_TOKEN')}")
-        else:
-            print(f"     Reply message ID: {getattr(message.reply_to_message, 'id', 'НЕТ')}")
-            print(f"     Reply message text: {getattr(message.reply_to_message, 'text', 'НЕТ')}")
-            print(f"     Reply message attaches: {len(getattr(message.reply_to_message, 'attaches', []))}")
-    print(f"   Attaches: {len(message.attaches) if message.attaches else 0}")
-    if message.attaches:
-        for i, attach in enumerate(message.attaches):
-            print(f"     Вложение {i+1}: {getattr(attach, 'name', 'БЕЗ_ИМЕНИ')} - {getattr(attach, 'url', 'БЕЗ_URL')}")
-    
-    # Дополнительно выводим полный объект сообщения
-    print("🔍 DEBUG: Полный объект сообщения:")
-    import json as json_module
-    try:
-        # Преобразуем объект в словарь для вывода
-        msg_dict = {
-            'id': message.id,
-            'sender': message.sender,
-            'text': message.text,
-            'chat_id': getattr(message, 'chat_id', None),
-            'reply_to_message': getattr(message, 'reply_to_message', None),
-            'attaches': [{'name': getattr(attach, 'name', 'БЕЗ_ИМЕНИ'), 'url': getattr(attach, 'url', 'БЕЗ_URL')} for attach in (message.attaches or [])]
-        }
-        print(json_module.dumps(msg_dict, indent=2, ensure_ascii=False))
-    except Exception as e:
-        print(f"   Ошибка при выводе JSON: {e}")
-    
     if not args:
-        # Проверяем, является ли это ответом на сообщение с файлом
         if hasattr(message, 'reply_to_message') and message.reply_to_message:
-            print("🔍 DEBUG: Обнаружен ответ на сообщение, проверяем вложения...")
             reply_msg = message.reply_to_message
             if isinstance(reply_msg, dict):
-                # reply_to_message это словарь
-                reply_attaches = reply_msg.get('attaches', [])
-                if reply_attaches:
-                    print("🔍 DEBUG: В исходном сообщении есть вложения, загружаем...")
+                if reply_msg.get('attaches', []):
                     await load_from_file(api, message)
                     return
-                else:
-                    print("🔍 DEBUG: В исходном сообщении нет вложений")
-            else:
-                # reply_to_message это объект
-                if hasattr(reply_msg, 'attaches') and reply_msg.attaches:
-                    print("🔍 DEBUG: В исходном сообщении есть вложения, загружаем...")
-                    await load_from_file(api, message)
-                    return
-                else:
-                    print("🔍 DEBUG: В исходном сообщении нет вложений")
-        
+            elif hasattr(reply_msg, 'attaches') and reply_msg.attaches:
+                await load_from_file(api, message)
+                return
+
         response = "📦 Загрузка модулей\n\n"
         response += "📥 Способы загрузки:\n"
         response += f"• {api.config.get('prefix', '.')}load [ссылка] - загрузить по ссылке\n"
@@ -319,7 +266,6 @@ async def load_from_file(api, message):
         attach = message.attaches[0]
         file_name = getattr(attach, 'name', 'module.py')
         file_url = getattr(attach, 'url', None)
-        print(f"🔍 DEBUG: Загружаем из вложений текущего сообщения: {file_name}")
     # Или проверяем, есть ли ответ на сообщение с вложениями
     elif hasattr(message, 'reply_to_message') and message.reply_to_message:
         reply_msg = message.reply_to_message
@@ -332,9 +278,6 @@ async def load_from_file(api, message):
                 # В новом формате используется token вместо url
                 file_token = attach.get('token', None)
                 file_id = attach.get('fileId', None)
-                print(f"🔍 DEBUG: Загружаем из вложений исходного сообщения (dict): {file_name}")
-                print(f"   Token: {file_token}")
-                print(f"   File ID: {file_id}")
                 
                 # Для файлов нужно использовать API для получения URL
                 if file_token and file_id:
@@ -344,11 +287,6 @@ async def load_from_file(api, message):
                     reply_message_id = reply_msg.get('id')
                     current_chat_id = getattr(message, 'chat_id', None)
                     
-                    print(f"🔍 DEBUG: Передаем параметры для получения файла:")
-                    print(f"   File ID: {file_id}")
-                    print(f"   Token: {file_token}")
-                    print(f"   Reply Message ID: {reply_message_id}")
-                    print(f"   Current Chat ID: {current_chat_id}")
                     
                     # Получаем URL файла через API с параметрами
                     file_url = await api.get_file_url(file_id, file_token, reply_message_id, current_chat_id)
@@ -356,7 +294,6 @@ async def load_from_file(api, message):
                         await api.edit(message, f"❌ Не удалось получить URL файла {file_name}")
                         return
                     
-                    print(f"✅ Получен URL файла: {file_url}")
                 else:
                     await api.edit(message, "❌ Не удалось получить данные файла")
                     return
@@ -369,7 +306,6 @@ async def load_from_file(api, message):
                 attach = reply_msg.attaches[0]
                 file_name = getattr(attach, 'name', 'module.py')
                 file_url = getattr(attach, 'url', None)
-                print(f"🔍 DEBUG: Загружаем из вложений исходного сообщения (obj): {file_name}")
             else:
                 await api.edit(message, "❌ В исходном сообщении нет файлов")
                 return
@@ -405,8 +341,6 @@ async def load_from_file(api, message):
             'Referer': 'https://web.max.ru/',
         }
         
-        print(f"🔍 DEBUG: Скачиваем файл с авторизованными заголовками...")
-        print(f"   URL: {file_url}")
         
         # Добавляем таймаут и обработку ошибок сети
         timeout = aiohttp.ClientTimeout(total=30, connect=10)
@@ -414,11 +348,9 @@ async def load_from_file(api, message):
         async with aiohttp.ClientSession(timeout=timeout) as session:
             try:
                 async with session.get(file_url, headers=headers) as response:
-                    print(f"🔍 DEBUG: Ответ сервера: HTTP {response.status}")
                     
                     if response.status == 200:
                         content = await response.read()
-                        print(f"✅ Файл скачан, размер: {len(content)} байт")
                         
                         # Проверяем, что файл не пустой
                         if len(content) == 0:
@@ -433,7 +365,6 @@ async def load_from_file(api, message):
                         async with aiofiles.open(module_path, 'wb') as f:
                             await f.write(content)
                         
-                        print(f"✅ Файл сохранен: {module_path}")
                         
                         # Загружаем модуль
                         result = await load_module(module_path, api)
@@ -471,7 +402,6 @@ async def load_from_file(api, message):
                 error_text += f"💡 Возможно, домен недоступен или требует VPN"
                 
                 await api.edit(message, error_text)
-                print(f"❌ Ошибка подключения: {e}")
                 
             except aiohttp.ClientTimeout as e:
                 error_text = f"❌ Таймаут подключения\n\n"
@@ -480,7 +410,6 @@ async def load_from_file(api, message):
                 error_text += f"⚠️ Ошибка: {str(e)}"
                 
                 await api.edit(message, error_text)
-                print(f"❌ Таймаут: {e}")
                 
             except Exception as e:
                 error_text = f"❌ Неожиданная ошибка\n\n"
@@ -489,7 +418,6 @@ async def load_from_file(api, message):
                 error_text += f"⚠️ Ошибка: {str(e)}"
                 
                 await api.edit(message, error_text)
-                print(f"❌ Неожиданная ошибка: {e}")
                     
     except Exception as e:
         error_text = f"❌ Ошибка загрузки модуля\n\n"
@@ -498,9 +426,7 @@ async def load_from_file(api, message):
         error_text += f"⚠️ Ошибка: {str(e)}"
         
         await api.edit(message, error_text)
-        print(f"❌ Исключение при загрузке файла: {e}")
         import traceback
-        print(f"🔍 DEBUG: Traceback: {traceback.format_exc()}")
 
 async def register(commands):
     commands["load"] = load_command

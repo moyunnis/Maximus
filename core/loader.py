@@ -350,10 +350,11 @@ async def register_system_module(module):
 
 async def load_all_modules(api):
     print("--- Загрузка системных модулей ---")
-    from core_modules import info, management, ping, settings, modules, restart
+    from core_modules import info, management, ping, settings, modules, restart, tools
     await register_system_module(info); await register_system_module(management)
     await register_system_module(ping); await register_system_module(settings)
     await register_system_module(modules); await register_system_module(restart)
+    await register_system_module(tools)
     MODULES_DIR.mkdir(exist_ok=True)
     print("--- Автозагрузка пользовательских модулей ---")
     loaded_files = set()  # Отслеживаем загруженные файлы

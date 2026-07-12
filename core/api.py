@@ -8,10 +8,27 @@ import time
 
 # --- КОНФИГУРАЦИЯ ---
 BOT_NAME = "Maximus"
-BOT_VERSION = "1.0.2"
-BOT_VERSION_CODE = 110
+BOT_VERSION = "1.0.3"
+BOT_VERSION_CODE = 111
 MODULES_DIR = Path("modules")
 LOG_BUFFER = []
+
+START_TIME = time.time()
+
+def format_uptime(seconds: float) -> str:
+    seconds = int(seconds)
+    days, rem = divmod(seconds, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes, secs = divmod(rem, 60)
+    parts = []
+    if days:
+        parts.append(f"{days}д")
+    if hours:
+        parts.append(f"{hours}ч")
+    if minutes:
+        parts.append(f"{minutes}м")
+    parts.append(f"{secs}с")
+    return " ".join(parts)
 
 def _append_log(text: str):
     import logging
@@ -64,6 +81,10 @@ class API:
         self.BOT_VERSION = BOT_VERSION
         self.BOT_VERSION_CODE = BOT_VERSION_CODE
         self.LOG_BUFFER = LOG_BUFFER
+        self.START_TIME = START_TIME
+
+    def get_uptime(self) -> str:
+        return format_uptime(time.time() - self.START_TIME)
 
     def set_me(self, me_instance):
         self.me = me_instance
@@ -178,22 +199,17 @@ class API:
         try:
             from pymax.files import File
             file_path = Path(file_path)
-            print(f"🔍 DEBUG send_file: chat_id={chat_id}, file_path={file_path}, exists={file_path.exists()}")
             if not file_path.exists():
                 raise FileNotFoundError(f"Файл {file_path} не найден")
 
             file_obj = File(path=str(file_path))
-            print(f"🔍 DEBUG send_file: File object created: {file_obj}")
             result = await self.client.send_message(
                 chat_id=chat_id, text=text, attachments=[file_obj],
                 notify=kwargs.get('notify', True)
             )
-            print(f"🔍 DEBUG send_file: send_message result={result}")
             return result
         except Exception as e:
-            print(f"❌ Ошибка отправки файла: {e}")
-            import traceback
-            print(f"🔍 DEBUG send_file traceback: {traceback.format_exc()}")
+            _append_log(f"❌ Ошибка отправки файла: {e}")
             return None
 
     async def send_photo(self, chat_id, file_path, text="", markdown=False, **kwargs):

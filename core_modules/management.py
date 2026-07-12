@@ -276,18 +276,16 @@ async def register(commands):
             chat_id = getattr(message, 'chat_id', None)
             if chat_id is None:
                 chat_id = await api.await_chat_id(message)
-            print(f"🔍 DEBUG backup: chat_id={chat_id}, tmp_path={tmp_path}, exists={tmp_path.exists()}")
 
             if chat_id:
                 try:
                     result = await api.send_file(chat_id, str(tmp_path), f"Backup {ts}", notify=False)
-                    print(f"🔍 DEBUG backup: send_file result={result}")
                     if result:
                         await api.delete(message, for_me=False)
                     else:
                         await api.edit(message, "❌ Не удалось отправить файл бэкапа. Проверь логи.")
                 except Exception as send_err:
-                    print(f"❌ Ошибка отправки бэкапа: {send_err}")
+                    api.LOG_BUFFER.append(f"[backup] Ошибка отправки: {send_err}")
                     await api.edit(message, f"❌ Ошибка отправки: {send_err}")
             else:
                 await api.edit(message, "❌ Не удалось определить chat_id для отправки бэкапа")
@@ -346,14 +344,12 @@ async def register(commands):
                     if cfg_path.exists():
                         with open(cfg_path, 'r', encoding='utf-8') as f:
                             new_conf = json.load(f)
-                        # Сохраняем телефон и сессию
-                        current_phone = core_config.config.get('phone')
+                        current_phone = core_config.get('phone')
                         new_conf['phone'] = current_phone
-                        # Сохраняем конфиг в файл
                         with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
                             json.dump(new_conf, f, indent=4, ensure_ascii=False)
-                        # Обновляем объект в памяти
-                        core_config.config = new_conf
+                        core_config.clear()
+                        core_config.update(new_conf)
 
                     # 2) Восстановление модулей: копируем файлы из extracted modules/ -> MODULES_DIR
                     src_modules = extract_dir / 'modules'
@@ -410,80 +406,49 @@ async def register(commands):
 
         # Иначе — ожидаем zip во вложении
         attach = getattr(message, 'attaches', None)
-        
+
         # Если нет attach, пробуем найти файл в ответе на сообщение (как в modules.py)
-        if not attach:
-            print("🔍 DEBUG: В текущем сообщении нет вложений, проверяем reply_to_message...")
-            if hasattr(message, 'reply_to_message') and message.reply_to_message:
-                reply_msg = message.reply_to_message
-                print(f"🔍 DEBUG: Обнаружен ответ на сообщение, проверяем вложения...")
-                
-                if isinstance(reply_msg, dict):
-                    # reply_to_message это словарь
-                    reply_attaches = reply_msg.get('attaches', [])
-                    if reply_attaches:
-                        print("🔍 DEBUG: В исходном сообщении есть вложения (dict), используем их...")
-                        attach = reply_attaches
-                    else:
-                        print("🔍 DEBUG: В исходном сообщении (dict) нет вложений")
-                else:
-                    # reply_to_message это объект
-                    if hasattr(reply_msg, 'attaches') and reply_msg.attaches:
-                        print("🔍 DEBUG: В исходном сообщении есть вложения (object), используем их...")
-                        attach = reply_msg.attaches
-                    else:
-                        print("🔍 DEBUG: В исходном сообщении (object) нет вложений")
-            else:
-                print("🔍 DEBUG: Нет reply_to_message")
-        
+        if not attach and hasattr(message, 'reply_to_message') and message.reply_to_message:
+            reply_msg = message.reply_to_message
+            if isinstance(reply_msg, dict):
+                attach = reply_msg.get('attaches', [])
+            elif hasattr(reply_msg, 'attaches') and reply_msg.attaches:
+                attach = reply_msg.attaches
+
         if not attach:
             await api.edit(message, "⚠️ Прикрепите zip-файл с бэкапом к сообщению или ответьте на сообщение с файлом и вызовите loadbackup.")
             return
 
         try:
             attach0 = attach[0]
-            print(f"🔍 DEBUG: attach0 = {attach0}")
-            print(f"🔍 DEBUG: type(attach0) = {type(attach0)}")
-            
-            # Обрабатываем как словарь и как объект
+
             if isinstance(attach0, dict):
                 name = attach0.get('name', 'backup.zip')
                 file_id = attach0.get('fileId')
                 token = attach0.get('token')
-                url = attach0.get('url')  # Может быть None
-                print(f"🔍 DEBUG: dict - name={name}, fileId={file_id}, token={token}, url={url}")
-                
-                # Если нет прямого URL, генерируем его из fileId и token
+                url = attach0.get('url')
                 if not url and file_id and token:
                     url = f"https://files.oneme.ru/{file_id}/{token}"
-                    print(f"🔍 DEBUG: Сгенерирован URL: {url}")
             else:
                 url = getattr(attach0, 'url', None)
                 name = getattr(attach0, 'name', 'backup.zip')
                 file_id = getattr(attach0, 'fileId', None)
                 token = getattr(attach0, 'token', None)
-                print(f"🔍 DEBUG: object - url={url}, name={name}, fileId={file_id}, token={token}")
-                
-                # Если нет прямого URL, генерируем его из fileId и token
                 if not url and file_id and token:
                     url = f"https://files.oneme.ru/{file_id}/{token}"
-                    print(f"🔍 DEBUG: Сгенерирован URL: {url}")
-            
+
             if not url:
                 await api.edit(message, "❌ Ошибка: не удалось получить URL файла (нет fileId/token или url).")
                 return
-                
+
             if not name.lower().endswith('.zip'):
                 await api.edit(message, f"❌ Ошибка: файл '{name}' не является zip-архивом.")
                 return
-                
-            print(f"🔍 DEBUG: Файл принят - {name} ({url})")
 
             await api.edit(message, "⏳ Скачиваю бэкап для проверки...")
 
             tmpf = Path(tempfile.mktemp(suffix='.zip'))
 
-            # Используем API для получения URL файла
             try:
                 chat_id = getattr(message, 'chat_id', None)
                 if chat_id is None:
@@ -494,17 +459,15 @@ async def register(commands):
                 else:
                     file_id = getattr(attach0, 'fileId', None)
                     token = getattr(attach0, 'token', None)
-                
+
                 if file_id and token:
-                    # Получаем URL через API
                     file_url = await api.get_file_url(file_id, token, message.id, chat_id)
                     if not file_url:
                         await api.edit(message, "❌ Не удалось получить URL файла через API.")
                         return
-                    print(f"🔍 DEBUG: Получен URL через API: {file_url}")
                     url = file_url
             except Exception as e:
-                print(f"⚠️ Ошибка получения URL через API: {e}, используем прямой URL")
+                api.LOG_BUFFER.append(f"[loadbackup] Ошибка получения URL через API: {e}")
 
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as resp:

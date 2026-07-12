@@ -1,11 +1,23 @@
 import platform
 import psutil
-from core.loader import LOADED_MODULES, COMMANDS
+from core.loader import LOADED_MODULES, COMMANDS, MODULE_COMMANDS
 from core.config import PREFIX, config, get_banner_url, save_config
 import aiohttp
 import tempfile
 import os
 from pymax.files import Photo
+
+
+def _get_pymax_version() -> str:
+    try:
+        from importlib.metadata import version
+        return version("maxapi-python")
+    except Exception:
+        try:
+            import pymax
+            return getattr(pymax, "__version__", "?")
+        except Exception:
+            return "?"
 
 class InfoModule:
 
@@ -116,15 +128,22 @@ class InfoModule:
         if api.me and api.me.contact and api.me.contact.names:
             owner_name = api.me.contact.names[0].name
 
-        # Формируем текст инфо с markdown форматированием
+        modules_count = len(LOADED_MODULES)
+        commands_count = len(COMMANDS) + len(MODULE_COMMANDS)
+        uptime = api.get_uptime() if hasattr(api, "get_uptime") else "?"
+        pymax_ver = _get_pymax_version()
+
         info_text = self.config.get('custom_message') or (
-            f"🤖 **{api.BOT_NAME}** *{api.BOT_VERSION} (#{api.BOT_VERSION_CODE})*\n\n"
-            f"👤 **Владелец:** {owner_name}\n\n"
-            f"🖥 **Информация о хосте:**\n"
+            f"🤖 **{api.BOT_NAME}** *v{api.BOT_VERSION} (#{api.BOT_VERSION_CODE})*\n\n"
+            f"👤 **Владелец:** {owner_name}\n"
+            f"⏱ **Аптайм:** {uptime}\n"
+            f"🧩 **Модулей:** {modules_count}  •  **Команд:** {commands_count}\n\n"
+            f"🖥 **Хост:**\n"
             f"    🐍 **Python:** {python_version}\n"
+            f"    📦 **PyMax:** {pymax_ver}\n"
             f"    🧠 **CPU:** {cpu_display}\n"
             f"    💾 **RAM:** {ram_display}\n\n"
-            f"📝 **Префикс:** '{PREFIX if PREFIX else '.'}'"
+            f"📝 **Префикс:** `{PREFIX if PREFIX else '.'}`"
         )
         banner = self.config.get('banner_url')
         if banner:
@@ -166,8 +185,8 @@ class InfoModule:
                     return
                 await api.send_photo(
                     chat_id=chat_id,
+                    file_path=file_path,
                     text=info_text,
-                    photo=photo,
                     markdown=True,
                     notify=True
                 )
@@ -199,14 +218,17 @@ async def help_command(api, message, args):
     snippet = getattr(message, 'text', '')
     api.LOG_BUFFER.append(f"[help] {snippet[:80]}")
     if not args:
-        response = "📖 **Справка по командам**\n\n"
-        response += " ⚙️ Системные команды:\n"
-        response += f"   {', '.join(COMMANDS.keys())}\n\n"
+        total_cmds = len(COMMANDS) + len(MODULE_COMMANDS)
+        response = f"📖 **Справка Maximus** — *{total_cmds} команд, {len(LOADED_MODULES)} модулей*\n\n"
+        response += "⚙️ **Системные команды:**\n"
+        response += "   " + "  ".join(f"`{PREFIX}{c}`" for c in COMMANDS.keys()) + "\n"
         if LOADED_MODULES:
-            response += " 🧩 Модули:\n"
+            response += "\n🧩 **Модули:**\n"
             for i, (name, data) in enumerate(LOADED_MODULES.items(), 1):
-                response += f"   **{i}**. {data['header'].get('name', name)}\n"
-        response += f"\n*Инфо о модуле: {PREFIX}help [имя/название/номер]*"
+                cmd_count = len(data.get('commands', {}))
+                mod_name = data['header'].get('name', name)
+                response += f"   **{i}.** {mod_name} — *{cmd_count} команд*\n"
+        response += f"\n💡 *Подробнее о модуле: {PREFIX}help [имя/номер]*"
     else:
         arg = ' '.join(args)
         found_module = None

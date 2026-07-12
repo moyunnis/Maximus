@@ -51,7 +51,7 @@ async def register(commands):
         # system modules
         if section == "system":
             # Зарезервированные системные имена
-            system_modules = ["info", "management", "ping", "settings", "modules", "restart"]
+            system_modules = ["info", "management", "ping", "settings", "modules", "restart", "tools"]
             # Список только тех системных модулей, у которых есть зарегистрированные переменные
             available = []
             for m in system_modules:
