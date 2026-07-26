@@ -5,8 +5,8 @@
 <h1 align="center">Maximus — UserBot для мессенджера "Max"</h1>
 
 <p align="center">
-  <a href="https://codeberg.org/moyunni/Maximus/stars"><img src="https://img.shields.io/badge/dynamic/json?color=FFC107&style=for-the-badge&logo=codeberg&label=Stars&query=%24.stars&url=https%3A%2F%2Fcodeberg.org%2Fapi%2Fv1%2Frepos%2Fmoyunni%2FMaximus" alt="Stars"></a>
-  <a href="https://codeberg.org/moyunni/Maximus/src/branch/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-8BC34A?style=for-the-badge" alt="License"></a>
+  <a href="https://github.com/moyunnis/Maximus/stars"><img src="https://img.shields.io/badge/dynamic/json?color=FFC107&style=for-the-badge&logo=github&label=Stars&query=%24.stars&url=https%3A%2F%2Fgithub.com%2Fapi%2Fv1%2Frepos%2Fmoyunni%2FMaximus" alt="Stars"></a>
+  <a href="https://github.com/moyunnis/Maximus/src/branch/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-8BC34A?style=for-the-badge" alt="License"></a>
   <a href="https://t.me/moyunni_room"><img src="https://img.shields.io/badge/Telegram-Новости-blue?style=for-the-badge&logo=telegram" alt="Telegram Channel"></a>
 </p>
 
@@ -105,7 +105,7 @@ brew install python@3.12 git
 
 ```powershell
 # 1. Клонируем репозиторий
-git clone https://codeberg.org/moyunni/Maximus.git
+git clone https://github.com/moyunnis/Maximus.git
 
 # 2. Переходим в папку проекта
 cd Maximus
@@ -138,14 +138,14 @@ python main.py
 
 ```bash
 # Всё в одной команде:
-git clone https://codeberg.org/moyunni/Maximus.git && cd Maximus && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python3 main.py
+git clone https://github.com/moyunnis/Maximus.git && cd Maximus && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python3 main.py
 ```
 
 **Или пошагово:**
 
 ```bash
 # 1. Клонируем репозиторий
-git clone https://codeberg.org/moyunni/Maximus.git
+git clone https://github.com/moyunnis/Maximus.git
 
 # 2. Переходим в папку проекта
 cd Maximus
@@ -352,7 +352,7 @@ pip install -r requirements.txt --upgrade
 ---
 
 <p align="center">
-  <b>⭐ Если вам нравится проект, поставьте звезду на Codeberg! ⭐</b>
+  <b>⭐ Если вам нравится проект, поставьте звезду на Github! ⭐</b>
 </p>
 
 - Проект является улучшенным форком [Maxli](https://github.com/Igroshka/Maxli/tree/main)
