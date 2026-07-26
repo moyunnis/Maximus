@@ -5,9 +5,9 @@
 <h1 align="center">Maximus — UserBot для мессенджера "Max"</h1>
 
 <p align="center">
-  <a href="https://github.com/moyunnis/Maximus/stars"><img src="https://img.shields.io/badge/dynamic/json?color=FFC107&style=for-the-badge&logo=github&label=Stars&query=%24.stars&url=https%3A%2F%2Fgithub.com%2Fapi%2Fv1%2Frepos%2Fmoyunni%2FMaximus" alt="Stars"></a>
-  <a href="https://github.com/moyunnis/Maximus/src/branch/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-8BC34A?style=for-the-badge" alt="License"></a>
-  <a href="https://t.me/moyunni_room"><img src="https://img.shields.io/badge/Telegram-Новости-blue?style=for-the-badge&logo=telegram" alt="Telegram Channel"></a>
+  <a href="https://github.com/moyunnis/Maxli/stargazers"><img src="https://img.shields.io/github/stars/moyunnis/Maximus?style=for-the-badge&logo=github&color=FFC107" alt="Stars"></a>
+  <a href="https://github.com/moyunnis/Maxli/blob/main/LICENSE"><img src="https://img.shields.io/github/license/moyunnis/Maximus?style=for-the-badge&color=8BC34A" alt="License"></a>
+  <a href="https://moyunni_room.t.me"><img src="https://img.shields.io/badge/Telegram-Новости-blue?style=for-the-badge&logo=telegram" alt="Telegram Channel"></a>
 </p>
 
 <p align="center">
