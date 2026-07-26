@@ -6,10 +6,9 @@ import aiohttp
 import aiofiles
 import time
 
-# --- КОНФИГУРАЦИЯ ---
 BOT_NAME = "Maximus"
-BOT_VERSION = "1.0.3"
-BOT_VERSION_CODE = 111
+BOT_VERSION = "1.0.4"
+BOT_VERSION_CODE = 112
 MODULES_DIR = Path("modules")
 LOG_BUFFER = []
 
@@ -69,7 +68,6 @@ async def log_critical_error(e, message, client, chat_id=None):
     print("="*50 + "\n")
 
 
-# --- API ---
 class API:
     def __init__(self, client_instance, config_instance):
         self.client = client_instance
@@ -102,17 +100,14 @@ class API:
         except (ValueError, TypeError):
             return None
 
-        # Кэш
         if message_id_int in self.message_to_chat_cache:
             return self.message_to_chat_cache[message_id_int]
 
-        # Поиск в чатах по ID последнего сообщения
         for chat in self.client.chats:
             if chat.last_message and chat.last_message.id == message_id_int:
                 self.message_to_chat_cache[message_id_int] = chat.id
                 return chat.id
 
-        # Избранное (chat_id=0)
         if (hasattr(self, 'me') and self.me and 
             message.sender == self.me.contact.id and 
             hasattr(message, 'chat_id') and message.chat_id == 0):
@@ -130,8 +125,6 @@ class API:
         if hasattr(message, 'chat_id') and message.chat_id:
             return message.chat_id
         return await self.await_chat_id(message)
-
-    # --- Отправка и редактирование ---
 
     async def edit(self, message, text, markdown=False, attaches=None, **kwargs):
         """Редактирует сообщение. Если markdown=True — применяет форматирование."""
@@ -255,8 +248,6 @@ class API:
         except Exception as e:
             print(f"❌ Ошибка отправки фото: {e}")
             return None
-
-    # --- Прочие методы ---
 
     async def reply(self, message, text, **kwargs):
         """Отвечает в последний известный чат."""

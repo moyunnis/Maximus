@@ -11,7 +11,6 @@ async def restart_command(api, message, args):
     """Команда перезапуска юзербота."""
     await api.edit(message, "🔄 **Перезапуск юзербота...**\n\n⏳ Сохраняю информацию о перезапуске...")
     
-    # Сохраняем информацию о перезапуске
     restart_info = {
         "chat_id": message.chat_id,
         "message_id": message.id,
@@ -22,7 +21,6 @@ async def restart_command(api, message, args):
     with open(RESTART_INFO_FILE, 'w', encoding='utf-8') as f:
         json.dump(restart_info, f, indent=2)
     
-    # Красивое сообщение о перезапуске
     response = "🔄 Юзербот перезапускается...\n\n"
     response += f"⏰ Время: {time.strftime('%H:%M:%S', time.localtime())}\n"
     response += f"💬 Чат: {message.chat_id}\n"
@@ -31,10 +29,8 @@ async def restart_command(api, message, args):
     
     await api.edit(message, response)
     
-    # Небольшая задержка для красоты
     await asyncio.sleep(1)
     
-    # Завершаем процесс
     print("🔄 Перезапуск инициирован пользователем")
     import os
     import sys
@@ -58,11 +54,9 @@ async def check_restart_info(api):
         if not chat_id or not message_id:
             return
         
-        # Вычисляем время перезапуска
         current_time = time.time()
         restart_duration = current_time - restart_time
         
-        # Обновляем сообщение
         response = "✅ Юзербот запущен!\n\n"
         response += f"⏰ Время запуска: {time.strftime('%H:%M:%S', time.localtime(restart_time))}\n"
         response += f"🕐 Время перезапуска: {restart_duration:.1f} сек\n"
@@ -78,7 +72,6 @@ async def check_restart_info(api):
         
         print(f"✅ Обновлено сообщение о перезапуске в чате {chat_id}")
         
-        # НЕ удаляем файл здесь - он нужен для update_restart_complete
         
     except Exception as e:
         print(f"❌ Ошибка при обновлении сообщения о перезапуске: {e}")
@@ -101,11 +94,9 @@ async def update_restart_complete(api):
         if not chat_id or not message_id:
             return
         
-        # Вычисляем общее время
         current_time = time.time()
         total_duration = current_time - restart_time
         
-        # Финальное сообщение
         response = "✅ Юзербот полностью запущен!\n\n"
         response += f"⏰ Время запуска: {time.strftime('%H:%M:%S', time.localtime(restart_time))}\n"
         response += f"🕐 Общее время: {total_duration:.1f} сек\n"
@@ -119,7 +110,6 @@ async def update_restart_complete(api):
             text=response
         )
         
-        # Удаляем файл информации о перезапуске
         restart_file.unlink()
         
         print(f"✅ Завершено обновление сообщения о перезапуске в чате {chat_id}")

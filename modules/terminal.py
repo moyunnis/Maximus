@@ -39,7 +39,6 @@ async def terminal_command(api, message, args):
         if not result:
             result = "ℹ️ Команда выполнена успешно, вывод пуст"
         
-        # Обрезаем слишком длинный вывод
         if len(result) > 4000:
             result = result[:4000] + "\n... (вывод обрезан)"
         

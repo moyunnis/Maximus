@@ -30,27 +30,22 @@ async def message_handler(message: Message, client: Client):
         _append_log(f"⚠️ Сообщение {message.id} не имеет chat_id, пропускаем")
         return
         
-    # Временно добавляем chat_id в объект сообщения для совместимости с остальным кодом
     message.chat_id = chat_id
 
     _append_log(f"✅ Обрабатываем сообщение {message.id} в чате {message.chat_id}")
 
-    # Логируем команду или сообщение (обрезанный текст и полный текст)
     from core.api import _append_log
     snippet = (getattr(message, 'text', '') or '')[:80]
     full_text = getattr(message, 'text', '') or ''
     _append_log(f"[msg] {snippet}")
     _append_log(f"[msg-full] {full_text}")
 
-    # Обновляем last_known_chat_id для ответов на "Прр"
     api.update_last_known_chat_id(message)
 
-    # Проверяем, что команда от самого бота
     is_own = False
     if hasattr(client, 'me') and client.me and hasattr(message, 'sender'):
         is_own = (message.sender == client.me.contact.id)
 
-    # Обрабатываем команды только если сообщение от нас и начинается с префикса
     current_prefix = config.get('prefix', '.')
     if is_own and message.text and current_prefix and message.text.startswith(current_prefix):
         command_body = message.text[len(current_prefix):]; parts = command_body.split()
@@ -60,12 +55,10 @@ async def message_handler(message: Message, client: Client):
 
         if handler_info:
             handler = handler_info if callable(handler_info) else handler_info['function']
-            # Логируем команду и полный текст перед выполнением
             _append_log(f"[command] {command_name} | {full_text}")
             try:
                 await handler(api, message, args)
             except Exception as e:
-                # Логируем ошибку в LOG_BUFFER
                 err_text = f"❌ Ошибка выполнения команды {command_name}: {e} | Сообщение: {full_text}"
                 _append_log(err_text)
                 await log_critical_error(e, message, client)
@@ -73,9 +66,8 @@ async def message_handler(message: Message, client: Client):
                     await api.edit(message, err_text)
                 except Exception:
                     pass
-            return  # Выходим после обработки команды
+            return
 
-    # Обрабатываем все сообщения через вотчеры модулей
     from core.loader import WATCHERS
     for watcher in WATCHERS:
         try:
@@ -89,19 +81,16 @@ async def message_handler(message: Message, client: Client):
 async def startup(client: Client):
     api.set_me(client.me)
      
-    # Проверяем информацию о перезапуске
     from core_modules.restart import check_restart_info
     await check_restart_info(api)
     
     await load_all_modules(api)
     
-    # Обновляем сообщение о завершении загрузки модулей
     from core_modules.restart import update_restart_complete
     await update_restart_complete(api)
     
     print(f"Юзербот {api.BOT_NAME} v{api.BOT_VERSION} запущен!")
     
-    # Проверяем, что client.me не None перед обращением к его атрибутам
     if client.me and client.me.contact and client.me.contact.names:
         print(f"Вошел как: {client.me.contact.names[0].name} ({client.phone})")
     else:

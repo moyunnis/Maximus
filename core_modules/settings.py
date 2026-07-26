@@ -19,7 +19,6 @@ async def setprefix_command(api, message, args):
     new_prefix = args[0] if args else ""
     config['prefix'] = new_prefix
     save_config(config)
-    # ВАЖНО: нужно импортировать и изменить глобальную переменную в основном модуле
     from core import config as core_config
     core_config.PREFIX = new_prefix
     response_text = f"✅ Успешно! Новый префикс: {new_prefix}" if new_prefix else "✅ Успешно! Префикс убран."
@@ -29,30 +28,21 @@ async def register(commands):
     commands["addalias"] = addalias_command
     commands["remalias"] = remalias_command
     commands["setprefix"] = setprefix_command
-    
-    # Простейшие команды по алиасам/префиксам остаются
 
-    # Новая единая команда конфигурации
     async def config_command(api, message, args):
-        # Без аргументов — показать выбор разделов
         if not args:
             await api.edit(message, "⚙️ Конфиг:\n\n1) system — системные модули\n2) external — внешние модули\n\nИспользование:\nconfig 1 — список системных модулей с переменными\nconfig 2 — список внешних модулей с переменными\nconfig 1 <имя|номер> — показать переменные системного модуля\nconfig 2 <имя|номер> — показать переменные внешнего модуля")
             return
         section = args[0].lower()
-        # numeric shortcuts: "1" -> system, "2" -> external
         if section == "1": section = "system"
         if section == "2": section = "external"
 
-        # helper: truncate long values
         def _truncate(val, limit=80):
             s = str(val)
             return s if len(s) <= limit else s[:limit-3] + "..."
 
-        # system modules
         if section == "system":
-            # Зарезервированные системные имена
             system_modules = ["info", "management", "ping", "settings", "modules", "restart", "tools"]
-            # Список только тех системных модулей, у которых есть зарегистрированные переменные
             available = []
             for m in system_modules:
                 norm = f"{m}_Maximus"
@@ -94,10 +84,8 @@ async def register(commands):
             await api.edit(message, "\n".join(lines))
             return
 
-        # external modules
         if section == "external":
             ext_all = config.get("external_modules", {})
-            # Только внешние модули, у которых есть переменные
             external_keys = [k for k, v in ext_all.items() if not k.endswith("_Maximus") and v.get("settings")]
             if len(args) == 1:
                 if not external_keys:

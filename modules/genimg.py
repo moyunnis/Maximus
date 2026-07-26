@@ -9,7 +9,6 @@ import os
 import asyncio
 from core.config import get_module_setting, register_module_settings, save_config, config as core_config
 
-# Доступные модели
 AVAILABLE_MODELS = {
     "1": "flux",
     "2": "turbo",
@@ -19,7 +18,6 @@ AVAILABLE_MODELS = {
 
 MODULE_NAME = "genimg"
 
-# Регистрируем схему настроек при импорте
 register_module_settings(MODULE_NAME, {
     "model": {"default": "flux", "description": "Модель генерации (flux/turbo)"},
     "width": {"default": 1024, "description": "Ширина изображения"},
@@ -53,7 +51,6 @@ async def genimg_command(api, message, args):
         await api.edit(message, "❌ Не удалось определить chat_id")
         return
 
-    # Получаем настройки
     model = get_setting('model', 'flux')
     width = get_setting('width', 1024)
     height = get_setting('height', 1024)
@@ -62,7 +59,6 @@ async def genimg_command(api, message, args):
     await api.edit(message, f"🎨 Генерирую изображение...\nПромпт: {prompt}\nМодель: {model}\nРазмер: {width}x{height}\nEnchant: {enchant}")
 
     try:
-        # URL для генерации изображения
         image_url = f"https://pollinations.ai/p/{prompt}?width={width}&height={height}&model={model}&nologo=true&enchant={'true' if enchant else 'false'}"
         print(f"🔍 DEBUG: Генерируем изображение по URL: {image_url}")
         timeout = aiohttp.ClientTimeout(total=60)
@@ -99,7 +95,6 @@ async def genimg_command(api, message, args):
 async def genimgmodel_command(api, message, args):
     """Устанавливает модель для генерации изображений."""
     if not args:
-        # Показываем список доступных моделей
         current_model = get_setting('model', 'flux')
         models_text = "🤖 Доступные модели для генерации изображений:\n\n"
         for i, (key, model) in enumerate(AVAILABLE_MODELS.items(), 1):

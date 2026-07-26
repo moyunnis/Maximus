@@ -8,7 +8,6 @@ def _ensure_defaults(conf: Dict[str, Any]) -> Dict[str, Any]:
         conf["phone"] = input(">>> Введите номер телефона (например, +79123456789): ")
     if "prefix" not in conf: conf["prefix"] = "."
     if "aliases" not in conf: conf["aliases"] = {}
-    # Устанавливаем полезные алиасы по умолчанию, но не перезаписываем пользовательские
     default_aliases = {
         "cfg": "config",
         "lm": "load",
@@ -18,18 +17,15 @@ def _ensure_defaults(conf: Dict[str, Any]) -> Dict[str, Any]:
     }
     for k, v in default_aliases.items():
         conf.setdefault("aliases", {}).setdefault(k, v)
-    # Глобальные тексты (шаблоны) с подстановкой переменных
     if "texts" not in conf:
         conf["texts"] = {
             "module_loaded": "✅ Модуль '{name}' v{version} установлен (Maximus v{Maximus_version})",
             "module_unloaded": "✅ Модуль '{name}' удалён",
         }
-    # Реестр настроек внешних модулей
     if "external_modules" not in conf:
         conf["external_modules"] = {}
-    # Баннеры для системных команд
     if "banners" not in conf:
-        conf["banners"] = {  # keys: info, ping, help
+        conf["banners"] = {
             "info": "",
             "ping": "",
             "help": ""
@@ -64,7 +60,6 @@ def register_module_settings(module_name: str, settings_schema: Dict[str, Any]):
     settings_schema: {"option_key": {"default": Any, "description": str}}
     """
     conf = config
-    # Зарезервированные системные имена модулей
     reserved_names = {"info", "management", "ping", "settings", "modules", "restart", "tools"}
     normalized_name = module_name
     if module_name in reserved_names:
@@ -74,7 +69,6 @@ def register_module_settings(module_name: str, settings_schema: Dict[str, Any]):
     for key, meta in (settings_schema or {}).items():
         default_value = meta.get("default")
         description = meta.get("description", "")
-        # Значение не перетираем, если уже задано пользователем
         if key not in conf["external_modules"][normalized_name]["settings"]:
             conf["external_modules"][normalized_name]["settings"][key] = default_value
         conf["external_modules"][normalized_name]["descriptions"][key] = description
@@ -82,7 +76,6 @@ def register_module_settings(module_name: str, settings_schema: Dict[str, Any]):
     return normalized_name
 
 def get_module_setting(module_name: str, key: str, default: Any = None) -> Any:
-    # С учётом нормализации имён
     reserved_names = {"info", "management", "ping", "settings", "modules", "restart", "tools"}
     normalized_name = f"{module_name}_Maximus" if module_name in reserved_names else module_name
     return config.get("external_modules", {}).get(normalized_name, {}).get("settings", {}).get(key, default)

@@ -31,10 +31,8 @@ class InfoModule:
         var_name = args[2]
         value = ' '.join(args[3:])
 
-        # Определяем модуль по типу и имени/номеру
         module_name = None
         if mod_type == '1':
-            # Глобальные модули (core_modules)
             modules_list = list(LOADED_MODULES.items())
             if mod_id.isdigit():
                 idx = int(mod_id) - 1
@@ -48,22 +46,18 @@ class InfoModule:
             if not module_name:
                 await api.edit(message, f"❌ Глобальный модуль '{mod_id}' не найден.", markdown=True, notify=True)
                 return
-            # Если секции для модуля нет — создаём
             if module_name not in config:
                 config[module_name] = {}
-            # Баннер — это просто переменная banner
             if var_name.lower() == 'banner':
                 config[module_name]['banner'] = value
                 save_config(config)
                 await api.edit(message, f"✅ Баннер для '{module_name}' обновлён!", markdown=True, notify=True)
                 return
-            # Любая другая переменная
             config[module_name][var_name] = value
             save_config(config)
             await api.edit(message, f"✅ Значение {var_name} для '{module_name}' обновлено!", markdown=True, notify=True)
             return
         elif mod_type == '2':
-            # Внешние модули (external_modules)
             ext_mods = config.get('external_modules', {})
             modules_list = list(ext_mods.items())
             if mod_id.isdigit():
@@ -78,7 +72,6 @@ class InfoModule:
             if not module_name:
                 await api.edit(message, f"❌ Внешний модуль '{mod_id}' не найден.", markdown=True, notify=True)
                 return
-            # Сохраняем в settings
             if 'settings' not in config['external_modules'][module_name]:
                 config['external_modules'][module_name]['settings'] = {}
             config['external_modules'][module_name]['settings'][var_name] = value
@@ -88,7 +81,6 @@ class InfoModule:
         else:
             await api.edit(message, "❌ Первый аргумент должен быть 1 (глобальный) или 2 (внешний) модуль.", markdown=True, notify=True)
             return
-    # Кеш для баннера info: url -> (путь к файлу, file_id/attach)
     _banner_cache = {
         'url': None,
         'file_path': None,
@@ -96,19 +88,16 @@ class InfoModule:
     }
     """Модуль информации о боте и системе (по образцу HerokuInfoMod)"""
     def __init__(self):
-        # Конфиг для info-модуля (можно расширять)
         self.config = config.get('info', {
             'custom_message': None,
             'banner_url': get_banner_url('info') or '',
         })
-        # Сохраняем в config, если не было
         config['info'] = self.config
         save_config(config)
 
     async def info_command(self, api, message, args):
         snippet = getattr(message, 'text', '')
         api.LOG_BUFFER.append(f"[info] {snippet[:80]}")
-        # НЕ удаляем исходное сообщение, если баннера нет - будем его редактировать
         banner = self.config.get('banner_url')
         if banner:
             try:
@@ -147,16 +136,13 @@ class InfoModule:
         )
         banner = self.config.get('banner_url')
         if banner:
-            # Гарантируем прямые слэши для URL
             banner_url = banner.replace('\\', '/')
             
-            # --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
             chat_id = getattr(message, 'chat_id', None)
             if not chat_id:
                 chat_id = await api.get_chat_id_for_message(message)
 
             if chat_id:
-                # Проверяем кеш: если url совпадает и файл существует, используем кеш
                 file_path = self._banner_cache.get('file_path')
                 need_download = (
                     self._banner_cache.get('url') != banner_url or
@@ -166,7 +152,6 @@ class InfoModule:
                     async with aiohttp.ClientSession() as session:
                         async with session.get(banner_url) as resp:
                             if resp.status != 200:
-                                # Если скачать не удалось, отправляем просто текст
                                 await api.send(chat_id, info_text, notify=True, markdown=True) 
                                 return
                             suffix = os.path.splitext(banner_url)[-1] or '.jpg'
@@ -176,11 +161,9 @@ class InfoModule:
                                 tmp.write(content)
                     self._banner_cache['url'] = banner_url
                     self._banner_cache['file_path'] = file_path
-                # Отправляем фото через объект Photo (кешированный файл)
                 photo = Photo(path=file_path)
                 photo_data = photo.validate_photo()
                 if not photo_data:
-                    # Если фото невалидно, отправляем просто текст
                     await api.send(chat_id, info_text, notify=True, markdown=True)
                     return
                 await api.send_photo(
@@ -192,21 +175,14 @@ class InfoModule:
                 )
                 return
         
-        # Если баннера нет или не удалось отправить, редактируем текущее сообщение
         try:
             await api.edit(message, info_text, markdown=True)
         except Exception as e:
-            # Если редактирование не удалось (например, сообщение уже удалено), отправляем новое
             chat_id = getattr(message, 'chat_id', None)
             if not chat_id:
                 chat_id = await api.get_chat_id_for_message(message)
             await api.send(chat_id, info_text, notify=True, markdown=True)
 
-
-    # Настройки info производятся через config
-
-
-# Регистрация команд через функцию register (ожидается loader'ом)
 info_module = InfoModule()
 
 async def register(commands):
@@ -242,7 +218,6 @@ async def help_command(api, message, args):
             ver = found_module['header'].get('version', 'N/A'); dev = found_module['header'].get('developer', 'N/A')
             response += f"**Версия:** *{ver}* | **Автор:** *{dev}*\n"
             
-            # Добавляем описание модуля, если оно есть
             description = found_module['header'].get('description')
             if description:
                 response += f"📝 Описание: {description}\n"
@@ -253,7 +228,6 @@ async def help_command(api, message, args):
     
     banner = get_banner_url("help")
     if banner:
-        # --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
         chat_id = getattr(message, 'chat_id', None)
         if not chat_id:
             chat_id = await api.get_chat_id_for_message(message)

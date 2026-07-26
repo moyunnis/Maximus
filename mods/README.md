@@ -449,4 +449,4 @@ async def register(api):
 
 - **PyMax на GitHub:** https://github.com/MaxApiTeam/PyMax
 - **PyMax на PyPI:** `pip install maxapi-python`
-- **Maximus:** [https://codeberg.org/moyunni/Maximus]
+- **Maximus:** [https://github.com/moyunnis/Maximus]

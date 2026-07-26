@@ -30,12 +30,10 @@ async def unload_command(api, message, args):
         await api.edit(message, f"❌ {error}")
         return
     
-    # Если модуль загружен — выгружаем его
     if module.get('loaded'):
         response = await unload_module(module['name'])
         await api.edit(message, f"Вывод:\n{response}")
     else:
-        # Если модуль не загружен, но найден файл — удаляем файл
         try:
             file_path = module['file_path']
             if file_path.exists():
@@ -57,7 +55,6 @@ async def modules_command(api, message, args):
 async def sendmodule_command(api, message, args):
     if not args: await api.edit(message, "⚠️ Укажи имя модуля."); return
     
-    # Используем нечеткий поиск для поиска модуля
     module, error = fuzzy_find_module(args[0])
     if not module:
         await api.edit(message, f"❌ {error}")
@@ -67,13 +64,11 @@ async def sendmodule_command(api, message, args):
     display_name = module['display_name']
     
     try:
-        # Используем chat_id из сообщения
         chat_id = getattr(message, 'chat_id', None)
         if chat_id is None:
             await api.edit(message, "❌ Не удалось определить chat_id")
             return
         
-        # Отправляем файл модуля
         await api.edit(message, f"⏳ Отправляю файл модуля {display_name}...")
         result = await api.send_file(chat_id, str(module_path), f"Модуль {display_name}", notify=False)
         
@@ -93,14 +88,12 @@ async def register(commands):
     async def reload_command(api, message, args):
         """Перезагружает все внешние модули (файлы в папке modules)."""
         await api.edit(message, "⏳ Перезагрузка внешних модулей...")
-        # Сканируем папку MODULES_DIR
         MODULES_DIR.mkdir(exist_ok=True)
         results = []
         for file in MODULES_DIR.glob("*.py"):
             if file.stem == "__init__":
                 continue
             module_name = file.stem
-            # Пропускаем системные нормализованные имена
             if module_name.endswith("_Maximus"):
                 continue
             try:
@@ -118,8 +111,7 @@ async def register(commands):
         await api.edit(message, "⏳ Проверяю обновления Maximus...")
         
         try:
-            # 1) Получаем удалённый api.py (raw)
-            raw_url = "https://codeberg.org/moyunni/Maximus/raw/branch/main/core/api.py"
+            raw_url = "https://github.com/moyunnis/Maximus/raw/branch/main/core/api.py"
             async with aiohttp.ClientSession() as session:
                 async with session.get(raw_url) as resp:
                     if resp.status != 200:
@@ -127,7 +119,6 @@ async def register(commands):
                         return
                     remote_api = await resp.text()
             
-            # 2) Извлекаем BOT_VERSION_CODE из удалённого файла
             import re
             m = re.search(r"BOT_VERSION_CODE\s*=\s*(\d+)", remote_api)
             if not m:
@@ -137,7 +128,6 @@ async def register(commands):
             local_vc = api.BOT_VERSION_CODE
             local_v = api.BOT_VERSION
             
-            # 3) Сравниваем
             if local_vc == remote_vc:
                 await api.edit(message, f"ℹ️ У вас актуальная версия: v{local_v} ({local_vc})")
                 return
@@ -145,26 +135,22 @@ async def register(commands):
                 await api.edit(message, f"⚠️ У вас версия новее официальной (кастом): {local_vc} > {remote_vc}. Обновление не рекомендуется.")
                 return
             
-            # 4) Предложение обновиться (если есть арг 'yes' — без вопросов)
             if not args or args[0].lower() not in ("yes", "y", "да"):
                 await api.edit(message, f"🔔 Доступна новая версия ({remote_vc} > {local_vc}). Запустите: update yes")
                 return
             
-            # 5) Обновляем из Git, не трогая конфиги/модули/сессию
             await api.edit(message, "🔄 Начинаю обновление с GitHub...")
-            repo_url = "https://codeberg.org/moyunni/Maximus.git"
+            repo_url = "https://github.com/moyunnis/Maximus.git"
             project_root = Path.cwd()
             temp_dir = project_root / "_update_tmp"
             if temp_dir.exists():
                 import shutil
                 shutil.rmtree(temp_dir, ignore_errors=True)
             
-            # Клонируем во временную папку (только чистые системные директории)
             subprocess.check_call([sys.executable, "-m", "pip", "install", "gitpython"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             from git import Repo
             Repo.clone_from(repo_url, str(temp_dir))
             
-            # Список системных путей для обновления (не трогаем modules/, pymax_session/, Maximus_config.json)
             preserve = {"modules", "pymax_session", "Maximus_config.json", ".git", ".gitignore"}
             copy_roots = ["core", "core_modules", "main.py", "README.md", "run.bat", "run.sh", "maximus.service"]
             
@@ -174,19 +160,15 @@ async def register(commands):
                 dst = project_root / item
                 if src.exists():
                     if src.is_dir():
-                        # Удаляем старую директорию перед копированием
                         if dst.exists():
                             shutil.rmtree(dst, ignore_errors=True)
                         shutil.copytree(src, dst)
                     else:
                         shutil.copy2(src, dst)
             
-            # Удаляем временную директорию
             shutil.rmtree(temp_dir, ignore_errors=True)
             
-            # 6) Сообщаем и перезапускаем процесс (используем уже существующий механизм restart)
             await api.edit(message, "✅ Обновление установлено. Перезапуск...")
-            # Переиспользуем логику перезапуска
             from core_modules.restart import restart_command
             await restart_command(api, message, ["Обновление Maximus"])
             
@@ -223,7 +205,6 @@ async def register(commands):
 
     commands["exportlog"] = exportlog_command
 
-    # Простая очередь для хранящихся загруженных бэкапов перед применением
     PENDING_BACKUPS = {}
     
     async def backup_command(api, message, args):
@@ -235,22 +216,18 @@ async def register(commands):
         api.LOG_BUFFER.append(f"[backup-full] {getattr(message, 'text', '')}")
         await api.edit(message, "⏳ Готовлю бэкап...")
         try:
-            # Подготовка временного файла
             ts = int(time.time())
             tmp_name = f"backup_{ts}.zip"
             tmp_path = Path(tmp_name)
 
             def make_backup():
-                # 1) Сохраняем конфиг без phone во временный файл
                 conf_copy = dict(core_config)
                 conf_copy.pop('phone', None)
                 config_tmp_path = Path("Maximus_config.json")
                 with open(config_tmp_path, 'w', encoding='utf-8') as f:
                     json.dump(conf_copy, f, ensure_ascii=False, indent=2)
                 with zipfile.ZipFile(tmp_path, 'w', zipfile.ZIP_DEFLATED) as z:
-                    # 1) добавляем Maximus_config.json
                     z.write(config_tmp_path, 'Maximus_config.json')
-                    # 2) модули и любые файлы в папке MODULES_DIR
                     MODULES_DIR.mkdir(exist_ok=True)
                     modules = []
                     for p in MODULES_DIR.rglob('*'):
@@ -258,7 +235,6 @@ async def register(commands):
                             arcname = os.path.join('modules', os.path.relpath(p, MODULES_DIR))
                             z.write(p, arcname)
                             modules.append(str(p.name))
-                    # 3) (опционально) другие файлы - пока не добавляем глобальные session
                     meta = {
                         'author': getattr(api.me.contact, 'names', None) and api.me.contact.names[0].name or str(getattr(message, 'sender', 'unknown')),
                         'date': datetime.datetime.utcnow().isoformat() + 'Z',
@@ -266,7 +242,6 @@ async def register(commands):
                         'modules': modules,
                     }
                     z.writestr('meta.json', json.dumps(meta, ensure_ascii=False, indent=2))
-                # Удаляем временный Maximus_config.json
                 try:
                     config_tmp_path.unlink()
                 except Exception:
@@ -290,7 +265,6 @@ async def register(commands):
             else:
                 await api.edit(message, "❌ Не удалось определить chat_id для отправки бэкапа")
 
-            # Удаляем временный файл
             try:
                 tmp_path.unlink()
             except Exception:
@@ -311,9 +285,7 @@ async def register(commands):
         """Загружает zip-бекап из прикреплённого файла, показывает meta.json и просит подтвердить восстановление.
         Для подтверждения используйте: loadbackup apply <id>
         """
-        # 2 режима: если есть args and args[0]=='apply' — применять; иначе — считать прикреплённый zip и показать мету
         if args and args[0].lower() == 'apply':
-            # apply pending
             key = args[1] if len(args) > 1 else None
             if not PENDING_BACKUPS:
                 await api.edit(message, "⚠️ Нет ожидающих бэкапов для применения.")
@@ -339,7 +311,6 @@ async def register(commands):
                     with zipfile.ZipFile(tmp_zip, 'r') as z:
                         z.extractall(extract_dir)
 
-                    # 1) Восстановление конфигурации (не трогаем phone)
                     cfg_path = extract_dir / 'Maximus_config.json'
                     if cfg_path.exists():
                         with open(cfg_path, 'r', encoding='utf-8') as f:
@@ -351,7 +322,6 @@ async def register(commands):
                         core_config.clear()
                         core_config.update(new_conf)
 
-                    # 2) Восстановление модулей: копируем файлы из extracted modules/ -> MODULES_DIR
                     src_modules = extract_dir / 'modules'
                     if src_modules.exists():
                         MODULES_DIR.mkdir(exist_ok=True)
@@ -371,14 +341,12 @@ async def register(commands):
                 except Exception as e:
                     return False, str(e)
                 finally:
-                    # Удаляем времечную директорию
                     try:
                         shutil.rmtree(extract_dir)
                     except Exception:
                         pass
 
             ok, err = await asyncio.to_thread(apply_backup)
-            # После применения — удаляем pending и временный zip
             try:
                 Path(info['path']).unlink()
             except Exception:
@@ -389,7 +357,6 @@ async def register(commands):
                 await api.edit(message, f"❌ Ошибка при применении бэкапа: {err}")
                 return
 
-            # Перезагрузим внешние модули
             MODULES_DIR.mkdir(exist_ok=True)
             results = []
             for file in MODULES_DIR.glob("*.py"):
@@ -404,10 +371,8 @@ async def register(commands):
             await api.edit(message, f"✅ Восстановление завершено. Перезагрузка модулей:\n{"\n".join(results)}")
             return
 
-        # Иначе — ожидаем zip во вложении
         attach = getattr(message, 'attaches', None)
 
-        # Если нет attach, пробуем найти файл в ответе на сообщение (как в modules.py)
         if not attach and hasattr(message, 'reply_to_message') and message.reply_to_message:
             reply_msg = message.reply_to_message
             if isinstance(reply_msg, dict):
@@ -477,7 +442,6 @@ async def register(commands):
                     data = await resp.read()
                     tmpf.write_bytes(data)
 
-            # Прочитаем meta.json
             try:
                 with zipfile.ZipFile(tmpf, 'r') as z:
                     if 'meta.json' not in z.namelist():
@@ -490,7 +454,6 @@ async def register(commands):
                 tmpf.unlink(missing_ok=True)
                 return
 
-            # Сохраним pending
             b_id = f"b{int(time.time())}"
             PENDING_BACKUPS[b_id] = {'path': str(tmpf), 'meta': meta, 'uploader': getattr(message, 'sender', None)}
 

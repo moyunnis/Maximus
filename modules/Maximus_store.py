@@ -9,12 +9,12 @@ import aiohttp
 import re
 import os
 
-REPO_URL = "https://codeberg.org/moyunni/MaximusStore"
+REPO_URL = "https://github.com/moyunnis/MaximusStore"
 REPO_OWNER = "moyunni"
 REPO_NAME = "MaximusStore"
 
-API_BASE = f"https://codeberg.org/api/v1/repos/{REPO_OWNER}/{REPO_NAME}"
-RAW_BASE = f"https://codeberg.org/{REPO_OWNER}/{REPO_NAME}/raw/branch/main"
+API_BASE = f"https://github.com/api/v1/repos/{REPO_OWNER}/{REPO_NAME}"
+RAW_BASE = f"https://github.com/{REPO_OWNER}/{REPO_NAME}/raw/branch/main"
 
 async def store_command(api, message, args):
     """Поиск модулей в репозитории Maximus Store."""
