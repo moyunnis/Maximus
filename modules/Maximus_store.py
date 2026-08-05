@@ -1,6 +1,6 @@
 # name: Maximus Store
 # version: 2.2.0
-# developer: @moyunni (tg)
+# developer: @zoyuki (tg)
 # id: maximus_store
 # dependencies: aiohttp
 # min-Maximus: 100
@@ -13,8 +13,8 @@ from pathlib import Path
 from core.api import MODULES_DIR
 from core.loader import load_module, LOADED_MODULES, MODULE_IDS
 
-REPO_URL = "https://github.com/moyunnis/MaximusStore"
-REPO_OWNER = "moyunnis"
+REPO_URL = "https://github.com/zoyuki/MaximusStore"
+REPO_OWNER = "zoyuki"
 REPO_NAME = "MaximusStore"
 API_BASE = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}"
 RAW_BASE = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/main"
