@@ -5,15 +5,15 @@
 <h1 align="center">Maximus — UserBot для мессенджера "Max"</h1>
 
 <p align="center">
-  <a href="https://github.com/moyunnis/Maxli/stargazers"><img src="https://img.shields.io/github/stars/moyunnis/Maximus?style=for-the-badge&logo=github&color=FFC107" alt="Stars"></a>
-  <a href="https://github.com/moyunnis/Maxli/blob/main/LICENSE"><img src="https://img.shields.io/github/license/moyunnis/Maximus?style=for-the-badge&color=8BC34A" alt="License"></a>
-  <a href="https://moyunni_room.t.me"><img src="https://img.shields.io/badge/Telegram-Новости-blue?style=for-the-badge&logo=telegram" alt="Telegram Channel"></a>
+  <a href="https://github.com/zoyuki/Maxli/stargazers"><img src="https://img.shields.io/github/stars/zoyuki/Maximus?style=for-the-badge&logo=github&color=FFC107" alt="Stars"></a>
+  <a href="https://github.com/zoyuki/Maxli/blob/main/LICENSE"><img src="https://img.shields.io/github/license/zoyuki/Maximus?style=for-the-badge&color=8BC34A" alt="License"></a>
+  <a href="https://zoyuki_room.t.me"><img src="https://img.shields.io/badge/Telegram-Новости-blue?style=for-the-badge&logo=telegram" alt="Telegram Channel"></a>
 </p>
 
 <p align="center">
   ⚡️ Лучший UserBot для мессенджера <b>Max</b> с удобной системой модулей и легкостью.
   <br>
-  Создан <a href="https://t.me/moyunnie">Moyunni</a> с ❤️
+  Создан <a href="https://t.me/zoyuki">zoyuki</a> с ❤️
 </p>
 
 <p align="center">
@@ -46,7 +46,7 @@
 
 Все актуальные новости, обновления и полезную информацию о проекте вы найдете в нашем официальном Telegram-канале.
 
-➡️ **Подписаться на канал:** [moyunni_room.t.me](https://t.me/moyunni_room)
+➡️ **Подписаться на канал:** [zoyuki_room.t.me](https://t.me/zoyuki_room)
 
 ---
 
@@ -105,7 +105,7 @@ brew install python@3.12 git
 
 ```powershell
 # 1. Клонируем репозиторий
-git clone https://github.com/moyunnis/Maximus.git
+git clone https://github.com/zoyuki/Maximus.git
 
 # 2. Переходим в папку проекта
 cd Maximus
@@ -138,14 +138,14 @@ python main.py
 
 ```bash
 # Всё в одной команде:
-git clone https://github.com/moyunnis/Maximus.git && cd Maximus && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python3 main.py
+git clone https://github.com/zoyuki/Maximus.git && cd Maximus && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python3 main.py
 ```
 
 **Или пошагово:**
 
 ```bash
 # 1. Клонируем репозиторий
-git clone https://github.com/moyunnis/Maximus.git
+git clone https://github.com/zoyuki/Maximus.git
 
 # 2. Переходим в папку проекта
 cd Maximus
